@@ -67,6 +67,19 @@ namespace TMPro.EditorUtilities
         static readonly GUIContent k_KerningLabel = new GUIContent("Kerning", "Enables character specific spacing between pairs of characters.");
         static readonly GUIContent k_PaddingLabel = new GUIContent("Extra Padding", "Adds some padding between the characters and the edge of the text mesh. Can reduce graphical errors when displaying small text.");
 
+        //outline
+        static readonly GUIContent k_OutlineLabel = new GUIContent("Outline", "Enabled outline with vertex.");
+        static readonly GUIContent k_OutlineColorLabel = new GUIContent("Color", "Outline color.");
+        static readonly GUIContent k_OutlineThicknessLabel = new GUIContent("Thickness", "Outline thickness.");
+
+        //undelay
+        static readonly GUIContent k_UnderlayLabel = new GUIContent("Underlay", "Enables underlay with vertex.");
+        static readonly GUIContent k_UnderlayColorLabel = new GUIContent("Color", "Underlay color.");
+        static readonly GUIContent k_UnderlayOffsetXLabel = new GUIContent("OffsetX", "Underlay offset.");
+        static readonly GUIContent k_UnderlayOffsetYLabel = new GUIContent("OffsetY", "Underlay offset.");
+        static readonly GUIContent k_UnderlayDilateLabel = new GUIContent("Dilate", "Underlay dilate.");
+        static readonly GUIContent k_UnderlaySoftnessLabel = new GUIContent("Softness", "Underlay softness.");
+
         static readonly GUIContent k_LeftLabel = new GUIContent("Left");
         static readonly GUIContent k_TopLabel = new GUIContent("Top");
         static readonly GUIContent k_RightLabel = new GUIContent("Right");
@@ -169,6 +182,18 @@ namespace TMPro.EditorUtilities
 
         protected SerializedProperty m_ColorModeProp;
 
+        //outline
+        protected SerializedProperty m_EnableVertexOutlineProp;
+        protected SerializedProperty m_OutlineColorProp;
+        protected SerializedProperty m_OutlineThicknessProp;
+
+        //undelay
+        protected SerializedProperty m_EnableVertexUnderlayProp;
+        protected SerializedProperty m_UnderlayColorProp;
+        protected SerializedProperty m_UnderlayParamsProp;
+
+        protected SerializedProperty m_IntensityWidthParamsProp;
+
         protected bool m_HavePropertiesChanged;
 
         protected TMP_Text m_TextComponent;
@@ -247,6 +272,18 @@ namespace TMPro.EditorUtilities
             m_HasFontAssetChangedProp = serializedObject.FindProperty("m_hasFontAssetChanged");
 
             m_ColorModeProp = serializedObject.FindProperty("m_colorMode");
+
+            //outline
+            m_EnableVertexOutlineProp = serializedObject.FindProperty("m_enableVertexOutline");
+            m_OutlineColorProp = serializedObject.FindProperty("m_outlineColorVertex");
+            m_OutlineThicknessProp = serializedObject.FindProperty("m_outlineWidthVertex");
+
+            //undelay
+            m_EnableVertexUnderlayProp = serializedObject.FindProperty("m_enableVertexUnderlay");
+            m_UnderlayColorProp = serializedObject.FindProperty("m_underlayColor");
+            m_UnderlayParamsProp = serializedObject.FindProperty("m_underlayParams");
+
+            m_IntensityWidthParamsProp = serializedObject.FindProperty("m_intensityWidthParams");
 
             m_TextComponent = (TMP_Text)target;
             m_RectTransform = m_TextComponent.rectTransform;
@@ -396,7 +433,7 @@ namespace TMPro.EditorUtilities
 
             if (hasChanged)
             {
-                Undo.RecordObjects(new Object[] {m_RectTransform, m_TextComponent }, "Margin Changes");
+                Undo.RecordObjects(new Object[] { m_RectTransform, m_TextComponent }, "Margin Changes");
                 m_TextComponent.margin = marginOffset;
                 EditorUtility.SetDirty(target);
             }
@@ -498,6 +535,10 @@ namespace TMPro.EditorUtilities
 
             DrawColor();
 
+            DrawOutline();
+
+            DrawUnderlay();
+
             DrawSpacing();
 
             DrawAlignment();
@@ -507,6 +548,67 @@ namespace TMPro.EditorUtilities
             DrawTextureMapping();
 
             //EditorGUI.indentLevel -= 1;
+        }
+
+        protected void DrawOutline()
+        {
+            EditorGUI.BeginChangeCheck();
+            EditorGUILayout.PropertyField(m_EnableVertexOutlineProp, k_OutlineLabel);
+            if (EditorGUI.EndChangeCheck())
+            {
+                m_HavePropertiesChanged = true;
+            }
+            EditorGUIUtility.fieldWidth = 0;
+            if (m_EnableVertexOutlineProp.boolValue)
+            {
+                EditorGUI.indentLevel += 1;
+                EditorGUI.BeginChangeCheck();
+                //Color color = TMP_TextUtilities.DecodeFloatToColor(m_OutlineColorProp.floatValue);
+                //color = EditorGUILayout.ColorField(k_OutlineColorLabel, color);
+                //m_OutlineColorProp.floatValue = TMP_TextUtilities.EncodeColorToFloat(color);
+                EditorGUILayout.PropertyField(m_OutlineColorProp, k_OutlineColorLabel);
+                EditorGUILayout.PropertyField(m_OutlineThicknessProp, k_OutlineThicknessLabel);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    m_HavePropertiesChanged = true;
+                }
+                EditorGUI.indentLevel -= 1;
+            }
+            EditorGUILayout.Space();
+        }
+
+        protected void DrawUnderlay()
+        {
+            EditorGUI.BeginChangeCheck();
+            EditorGUILayout.PropertyField(m_EnableVertexUnderlayProp, k_UnderlayLabel);
+            if (EditorGUI.EndChangeCheck())
+            {
+                m_HavePropertiesChanged = true;
+            }
+            EditorGUIUtility.fieldWidth = 0;
+            if (m_EnableVertexUnderlayProp.boolValue)
+            {
+                EditorGUI.indentLevel += 1;
+                EditorGUI.BeginChangeCheck();
+                //var color = TMP_TextUtilities.DecodeFloatToColor(m_UnderlayColorProp.floatValue);
+                //color = EditorGUILayout.ColorField(k_UnderlayColorLabel, color);
+                //m_UnderlayColorProp.floatValue = TMP_TextUtilities.EncodeColorToFloat(color);
+                EditorGUILayout.PropertyField(m_UnderlayColorProp, k_UnderlayColorLabel);
+                byte[] byteEncoded = System.BitConverter.GetBytes(m_UnderlayParamsProp.floatValue);
+                float v1 = (EditorGUILayout.Slider(k_UnderlayOffsetXLabel, (float)byteEncoded[0] * 2 / 255 - 1, -1, 1) * 255);
+                float v2 = (EditorGUILayout.Slider(k_UnderlayOffsetXLabel, (float)byteEncoded[1] * 2 / 255 - 1, -1, 1) * 255);
+                byteEncoded[0] = (byte)((255 + v1) / 2);
+                byteEncoded[1] = (byte)((255 + v2) / 2);
+                byteEncoded[2] = (byte)(EditorGUILayout.Slider(k_UnderlayDilateLabel, (float)byteEncoded[2] / 255, 0, 1) * 255);
+                byteEncoded[3] = (byte)(EditorGUILayout.Slider(k_UnderlaySoftnessLabel, (float)byteEncoded[3] / 255, 0, 1) * 255);
+                m_UnderlayParamsProp.floatValue = System.BitConverter.ToSingle(byteEncoded);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    m_HavePropertiesChanged = true;
+                }
+                EditorGUI.indentLevel -= 1;
+            }
+            EditorGUILayout.Space();
         }
 
         void DrawFont()
@@ -531,7 +633,7 @@ namespace TMPro.EditorUtilities
             Rect rect;
 
             // MATERIAL PRESET
-            if (m_MaterialPresetNames != null && !isFontAssetDirty )
+            if (m_MaterialPresetNames != null && !isFontAssetDirty)
             {
                 EditorGUI.BeginChangeCheck();
                 rect = EditorGUILayout.GetControlRect(false, 17);
@@ -943,7 +1045,7 @@ namespace TMPro.EditorUtilities
             rect = EditorGUILayout.GetControlRect(false, EditorGUIUtility.singleLineHeight);
 
             rect.x += currentLabelWidth;
-            rect.width = (rect.width - currentLabelWidth -3f) / 2f;
+            rect.width = (rect.width - currentLabelWidth - 3f) / 2f;
             EditorGUIUtility.labelWidth = Mathf.Min(rect.width * 0.55f, 80f);
 
             EditorGUI.PropertyField(rect, m_LineSpacingProp, k_LineSpacingLabel);

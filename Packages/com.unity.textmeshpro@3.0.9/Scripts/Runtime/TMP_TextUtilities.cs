@@ -2302,5 +2302,26 @@ namespace TMPro
             return value;
         }
 
+
+        private static byte[] byteColor = new byte[4];
+        public static float EncodeColorToFloat(Color32 color)
+        {
+            byteColor[0] = (byte)Mathf.Round(color.r * 255);
+            byteColor[1] = (byte)Mathf.Round(color.g * 255);
+            byteColor[2] = (byte)Mathf.Round(color.b * 255);
+            byteColor[3] = (byte)Mathf.Round(color.a * 255);
+            return System.BitConverter.ToSingle(byteColor);
+        }
+
+        public static Color32 DecodeFloatToColor(float bit32)
+        {
+            Color32 color = new Color();
+            byte[] colorEncoded = System.BitConverter.GetBytes(bit32);
+            color.r = (byte)(colorEncoded[0] * 255);
+            color.g = (byte)(colorEncoded[1] * 255);
+            color.b = (byte)(colorEncoded[2] * 255);
+            color.a = (byte)(colorEncoded[3] * 255);
+            return color;
+        }
     }
 }

@@ -407,6 +407,86 @@ namespace TMPro
         [SerializeField]
         protected Color32 m_faceColor = Color.white;
 
+        public bool enableVertexOutline
+        {
+            get { return m_enableVertexOutline; }
+            set { if (m_enableVertexOutline == value) return; m_havePropertiesChanged = true; m_enableVertexOutline = value; SetVerticesDirty(); }
+        }
+        [SerializeField]
+        protected bool m_enableVertexOutline;
+
+        public Color32 outlineColorVertex
+        {
+            get { return m_outlineColorVertex; }
+            set { m_havePropertiesChanged = true; m_outlineColorVertex = value; SetVerticesDirty(); }
+        }
+        [SerializeField]
+        protected Color32 m_outlineColorVertex = Color.white;
+        public float outlineWidthVertex
+        {
+            get { return m_outlineWidthVertex; }
+            set { m_havePropertiesChanged = true; m_outlineWidthVertex = value; SetVerticesDirty(); }
+        }
+        [SerializeField, Range(0, 1)]
+        protected float m_outlineWidthVertex = 0.0f;
+
+        public bool enableVertexUnderlay
+        {
+            get { return m_enableVertexUnderlay; }
+            set { if (m_enableVertexUnderlay == value) return; m_havePropertiesChanged = true; m_enableVertexUnderlay = value; SetVerticesDirty(); }
+        }
+        [SerializeField]
+        protected bool m_enableVertexUnderlay;
+
+        public Color32 underlayColor
+        {
+            get { return m_underlayColor; }
+            set { m_havePropertiesChanged = true; m_underlayColor = value; SetVerticesDirty(); }
+        }
+        [SerializeField]
+        protected Color32 m_underlayColor = Color.white;
+        public float underlayOffsetX
+        {
+            get { return GetUnderlayParam(m_underlayParams, 0) * 2 / 255 - 1; }
+            set { SetUnderlayParam(m_underlayParams, 0, (byte)((255 + value) / 2)); }
+        }
+        public float underlayOffsetY
+        {
+            get { return GetUnderlayParam(m_underlayParams, 0) * 2 / 255 - 1; }
+            set { SetUnderlayParam(m_underlayParams, 1, (byte)((255 + value) / 2)); }
+        }
+        public float underlayDilate
+        {
+            get { return GetUnderlayParam(m_underlayParams, 2) / 255; }
+            set { SetUnderlayParam(m_underlayParams, 2, (byte)(value * 255)); }
+        }
+        public float underlaySoftness
+        {
+            get { return GetUnderlayParam(m_underlayParams, 3) / 255; }
+            set { SetUnderlayParam(m_underlayParams, 3, (byte)(value * 255)); }
+        }
+        [SerializeField]
+        protected float m_underlayParams = 0.0f;
+
+        [SerializeField, ColorUsageAttribute(true, true)]
+        protected Color m_testHdr = Color.white;
+
+        private float GetUnderlayParam(float bit32, int index)
+        {
+            byte[] byteEncoded = BitConverter.GetBytes(bit32);
+            return byteEncoded[index];
+        }
+
+        private void SetUnderlayParam(float bit32, int index, byte value) 
+        {
+            byte[] byteEncoded = BitConverter.GetBytes(bit32);
+            if (byteEncoded[index] == value)
+                return;
+            byteEncoded[index] = value;
+            m_havePropertiesChanged = true;
+            m_underlayParams = BitConverter.ToSingle(byteEncoded);
+            SetVerticesDirty();
+        }
 
         /// <summary>
         /// Sets the color of the _OutlineColor property of the assigned material. Changing outline color will result in an instance of the material.
