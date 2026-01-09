@@ -69,11 +69,13 @@ namespace TMPro.EditorUtilities
 
         //outline
         static readonly GUIContent k_OutlineLabel = new GUIContent("Outline", "Enabled outline with vertex.");
+        static readonly GUIContent k_OutlineTypeLabel = new GUIContent("Outline Type", "Outline Type.");
         static readonly GUIContent k_OutlineColorLabel = new GUIContent("Color", "Outline color.");
         static readonly GUIContent k_OutlineThicknessLabel = new GUIContent("Thickness", "Outline thickness.");
 
         //undelay
         static readonly GUIContent k_UnderlayLabel = new GUIContent("Underlay", "Enables underlay with vertex.");
+        static readonly GUIContent k_UnderlayTypeLabel = new GUIContent("Underlay Type", "Underlay Type.");
         static readonly GUIContent k_UnderlayColorLabel = new GUIContent("Color", "Underlay color.");
         static readonly GUIContent k_UnderlayOffsetXLabel = new GUIContent("OffsetX", "Underlay offset.");
         static readonly GUIContent k_UnderlayOffsetYLabel = new GUIContent("OffsetY", "Underlay offset.");
@@ -184,15 +186,15 @@ namespace TMPro.EditorUtilities
 
         //outline
         protected SerializedProperty m_EnableVertexOutlineProp;
+        protected SerializedProperty m_OutlineTypeProp;
         protected SerializedProperty m_OutlineColorProp;
         protected SerializedProperty m_OutlineThicknessProp;
 
         //undelay
         protected SerializedProperty m_EnableVertexUnderlayProp;
+        protected SerializedProperty m_UnderlayTypeProp;
         protected SerializedProperty m_UnderlayColorProp;
         protected SerializedProperty m_UnderlayParamsProp;
-
-        protected SerializedProperty m_IntensityWidthParamsProp;
 
         protected bool m_HavePropertiesChanged;
 
@@ -275,15 +277,15 @@ namespace TMPro.EditorUtilities
 
             //outline
             m_EnableVertexOutlineProp = serializedObject.FindProperty("m_enableVertexOutline");
+            m_OutlineTypeProp = serializedObject.FindProperty("m_outlineType");
             m_OutlineColorProp = serializedObject.FindProperty("m_outlineColorVertex");
             m_OutlineThicknessProp = serializedObject.FindProperty("m_outlineWidthVertex");
 
             //undelay
             m_EnableVertexUnderlayProp = serializedObject.FindProperty("m_enableVertexUnderlay");
+            m_UnderlayTypeProp = serializedObject.FindProperty("m_underlayType");
             m_UnderlayColorProp = serializedObject.FindProperty("m_underlayColor");
             m_UnderlayParamsProp = serializedObject.FindProperty("m_underlayParams");
-
-            m_IntensityWidthParamsProp = serializedObject.FindProperty("m_intensityWidthParams");
 
             m_TextComponent = (TMP_Text)target;
             m_RectTransform = m_TextComponent.rectTransform;
@@ -563,9 +565,7 @@ namespace TMPro.EditorUtilities
             {
                 EditorGUI.indentLevel += 1;
                 EditorGUI.BeginChangeCheck();
-                //Color color = TMP_TextUtilities.DecodeFloatToColor(m_OutlineColorProp.floatValue);
-                //color = EditorGUILayout.ColorField(k_OutlineColorLabel, color);
-                //m_OutlineColorProp.floatValue = TMP_TextUtilities.EncodeColorToFloat(color);
+                EditorGUILayout.PropertyField(m_OutlineTypeProp, k_OutlineTypeLabel);
                 EditorGUILayout.PropertyField(m_OutlineColorProp, k_OutlineColorLabel);
                 EditorGUILayout.PropertyField(m_OutlineThicknessProp, k_OutlineThicknessLabel);
                 if (EditorGUI.EndChangeCheck())
@@ -590,13 +590,11 @@ namespace TMPro.EditorUtilities
             {
                 EditorGUI.indentLevel += 1;
                 EditorGUI.BeginChangeCheck();
-                //var color = TMP_TextUtilities.DecodeFloatToColor(m_UnderlayColorProp.floatValue);
-                //color = EditorGUILayout.ColorField(k_UnderlayColorLabel, color);
-                //m_UnderlayColorProp.floatValue = TMP_TextUtilities.EncodeColorToFloat(color);
+                EditorGUILayout.PropertyField(m_UnderlayTypeProp, k_UnderlayTypeLabel);
                 EditorGUILayout.PropertyField(m_UnderlayColorProp, k_UnderlayColorLabel);
                 byte[] byteEncoded = System.BitConverter.GetBytes(m_UnderlayParamsProp.floatValue);
                 float v1 = (EditorGUILayout.Slider(k_UnderlayOffsetXLabel, (float)byteEncoded[0] * 2 / 255 - 1, -1, 1) * 255);
-                float v2 = (EditorGUILayout.Slider(k_UnderlayOffsetXLabel, (float)byteEncoded[1] * 2 / 255 - 1, -1, 1) * 255);
+                float v2 = (EditorGUILayout.Slider(k_UnderlayOffsetYLabel, (float)byteEncoded[1] * 2 / 255 - 1, -1, 1) * 255);
                 byteEncoded[0] = (byte)((255 + v1) / 2);
                 byteEncoded[1] = (byte)((255 + v2) / 2);
                 byteEncoded[2] = (byte)(EditorGUILayout.Slider(k_UnderlayDilateLabel, (float)byteEncoded[2] / 255, 0, 1) * 255);

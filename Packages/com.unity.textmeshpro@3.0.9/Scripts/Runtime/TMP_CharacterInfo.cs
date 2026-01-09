@@ -11,11 +11,11 @@ namespace TMPro
         public Vector2 uv2;
         public Vector2 uv4;
         public Color32 color;
+        public Vector4 tangent;
 
         public static TMP_Vertex zero { get { return k_Zero; } }
 
         //public Vector3 normal;
-        //public Vector4 tangent;
 
         static readonly TMP_Vertex k_Zero = new TMP_Vertex();
     }

@@ -103,6 +103,9 @@ namespace TMPro
     public enum FontStyles { Normal = 0x0, Bold = 0x1, Italic = 0x2, Underline = 0x4, LowerCase = 0x8, UpperCase = 0x10, SmallCaps = 0x20, Strikethrough = 0x40, Superscript = 0x80, Subscript = 0x100, Highlight = 0x200 };
     public enum FontWeight { Thin = 100, ExtraLight = 200, Light = 300, Regular = 400, Medium = 500, SemiBold = 600, Bold = 700, Heavy = 800, Black = 900 };
 
+    public enum OutlineType { Inner, Outer };
+
+    public enum UnderlayType { Normal, Inner };
     /// <summary>
     /// Base class which contains common properties and functions shared between the TextMeshPro and TextMeshProUGUI component.
     /// </summary>
@@ -415,6 +418,13 @@ namespace TMPro
         [SerializeField]
         protected bool m_enableVertexOutline;
 
+        public OutlineType outlineType {
+            get { return m_outlineType; }
+            set { if (m_outlineType == value) return; m_havePropertiesChanged = true; m_outlineType = value; SetVerticesDirty(); }
+        }
+        [SerializeField]
+        protected OutlineType m_outlineType;
+
         public Color32 outlineColorVertex
         {
             get { return m_outlineColorVertex; }
@@ -437,6 +447,13 @@ namespace TMPro
         }
         [SerializeField]
         protected bool m_enableVertexUnderlay;
+        public UnderlayType underlayType
+        {
+            get { return m_underlayType; }
+            set { if (m_underlayType == value) return; m_havePropertiesChanged = true; m_underlayType = value; SetVerticesDirty(); }
+        }
+        [SerializeField]
+        protected UnderlayType m_underlayType;
 
         public Color32 underlayColor
         {
@@ -467,9 +484,6 @@ namespace TMPro
         }
         [SerializeField]
         protected float m_underlayParams = 0.0f;
-
-        [SerializeField, ColorUsageAttribute(true, true)]
-        protected Color m_testHdr = Color.white;
 
         private float GetUnderlayParam(float bit32, int index)
         {
@@ -5479,6 +5493,73 @@ namespace TMPro
             //m_textInfo.characterInfo[m_characterCount].vertex_TR.tangent = tangent;
             //m_textInfo.characterInfo[m_characterCount].vertex_BR.tangent = tangent;
             #endregion end Normals & Tangents
+
+            #region Setup Outline Vertex Colors
+            // Handle Vertex Colors & Vertex Color Gradient
+            if (m_enableVertexOutline)
+            {
+                float encodeColor = TMP_TextUtilities.EncodeColorToFloat(m_outlineColorVertex);
+                m_textInfo.characterInfo[m_characterCount].vertex_BL.tangent[0] = encodeColor;
+                m_textInfo.characterInfo[m_characterCount].vertex_BL.tangent[1] = m_outlineWidthVertex;
+
+                m_textInfo.characterInfo[m_characterCount].vertex_TL.tangent[0] = encodeColor;
+                m_textInfo.characterInfo[m_characterCount].vertex_TL.tangent[1] = m_outlineWidthVertex;
+
+                m_textInfo.characterInfo[m_characterCount].vertex_TR.tangent[0] = encodeColor;
+                m_textInfo.characterInfo[m_characterCount].vertex_TR.tangent[1] = m_outlineWidthVertex;
+
+                m_textInfo.characterInfo[m_characterCount].vertex_BR.tangent[0] = encodeColor;
+                m_textInfo.characterInfo[m_characterCount].vertex_BR.tangent[1] = m_outlineWidthVertex;
+            }
+            else 
+            {
+                m_textInfo.characterInfo[m_characterCount].vertex_BL.tangent[0] = 0.0f;
+                m_textInfo.characterInfo[m_characterCount].vertex_BL.tangent[1] = 0.0f;
+
+                m_textInfo.characterInfo[m_characterCount].vertex_TL.tangent[0] = 0.0f;
+                m_textInfo.characterInfo[m_characterCount].vertex_TL.tangent[1] = 0.0f;
+
+                m_textInfo.characterInfo[m_characterCount].vertex_TR.tangent[0] = 0.0f;
+                m_textInfo.characterInfo[m_characterCount].vertex_TR.tangent[1] = 0.0f;
+
+                m_textInfo.characterInfo[m_characterCount].vertex_BR.tangent[0] = 0.0f;
+                m_textInfo.characterInfo[m_characterCount].vertex_BR.tangent[1] = 0.0f;
+            }
+            #endregion
+
+            #region Setup Underlay Vertex Colors
+            // Handle Vertex Colors & Vertex Color Gradient
+            if (m_enableVertexUnderlay)
+            {
+                float encodeColor = TMP_TextUtilities.EncodeColorToFloat(m_underlayColor);
+                m_textInfo.characterInfo[m_characterCount].vertex_BL.tangent[2] = encodeColor;
+                m_textInfo.characterInfo[m_characterCount].vertex_BL.tangent[3] = m_underlayParams;
+
+                m_textInfo.characterInfo[m_characterCount].vertex_TL.tangent[2] = encodeColor;
+                m_textInfo.characterInfo[m_characterCount].vertex_TL.tangent[3] = m_underlayParams;
+
+                m_textInfo.characterInfo[m_characterCount].vertex_TR.tangent[2] = encodeColor;
+                m_textInfo.characterInfo[m_characterCount].vertex_TR.tangent[3] = m_underlayParams;
+
+                m_textInfo.characterInfo[m_characterCount].vertex_BR.tangent[2] = encodeColor;
+                m_textInfo.characterInfo[m_characterCount].vertex_BR.tangent[3] = m_underlayParams;
+
+            }
+            else
+            {
+                m_textInfo.characterInfo[m_characterCount].vertex_BL.tangent[2] = 0.0f;
+                m_textInfo.characterInfo[m_characterCount].vertex_BL.tangent[3] = 0.0f;
+
+                m_textInfo.characterInfo[m_characterCount].vertex_TL.tangent[2] = 0.0f;
+                m_textInfo.characterInfo[m_characterCount].vertex_TL.tangent[3] = 0.0f;
+
+                m_textInfo.characterInfo[m_characterCount].vertex_TR.tangent[2] = 0.0f;
+                m_textInfo.characterInfo[m_characterCount].vertex_TR.tangent[3] = 0.0f;
+
+                m_textInfo.characterInfo[m_characterCount].vertex_BR.tangent[2] = 0.0f;
+                m_textInfo.characterInfo[m_characterCount].vertex_BR.tangent[3] = 0.0f;
+            }
+            #endregion
         }
 
 
@@ -5615,12 +5696,11 @@ namespace TMPro
             m_textInfo.meshInfo[materialIndex].uvs2[3 + index_X4] = characterInfoArray[i].vertex_BR.uv2;
 
 
-            // Setup UVS4
-            //m_textInfo.meshInfo[0].uvs4[0 + index_X4] = characterInfoArray[i].vertex_BL.uv4;
-            //m_textInfo.meshInfo[0].uvs4[1 + index_X4] = characterInfoArray[i].vertex_TL.uv4;
-            //m_textInfo.meshInfo[0].uvs4[2 + index_X4] = characterInfoArray[i].vertex_TR.uv4;
-            //m_textInfo.meshInfo[0].uvs4[3 + index_X4] = characterInfoArray[i].vertex_BR.uv4;
-
+            // Setup UVS3
+            m_textInfo.meshInfo[materialIndex].tangents[0 + index_X4] = characterInfoArray[i].vertex_BL.tangent;
+            m_textInfo.meshInfo[materialIndex].tangents[1 + index_X4] = characterInfoArray[i].vertex_TL.tangent;
+            m_textInfo.meshInfo[materialIndex].tangents[2 + index_X4] = characterInfoArray[i].vertex_TR.tangent;
+            m_textInfo.meshInfo[materialIndex].tangents[3 + index_X4] = characterInfoArray[i].vertex_BR.tangent;
 
             // setup Vertex Colors
             m_textInfo.meshInfo[materialIndex].colors32[0 + index_X4] = characterInfoArray[i].vertex_BL.color;
@@ -5689,11 +5769,11 @@ namespace TMPro
             }
 
 
-            // Setup UVS4
-            //m_textInfo.meshInfo[0].uvs4[0 + index_X4] = characterInfoArray[i].vertex_BL.uv4;
-            //m_textInfo.meshInfo[0].uvs4[1 + index_X4] = characterInfoArray[i].vertex_TL.uv4;
-            //m_textInfo.meshInfo[0].uvs4[2 + index_X4] = characterInfoArray[i].vertex_TR.uv4;
-            //m_textInfo.meshInfo[0].uvs4[3 + index_X4] = characterInfoArray[i].vertex_BR.uv4;
+            // Setup tangents
+            m_textInfo.meshInfo[materialIndex].tangents[0 + index_X4] = characterInfoArray[i].vertex_BL.tangent;
+            m_textInfo.meshInfo[materialIndex].tangents[1 + index_X4] = characterInfoArray[i].vertex_TL.tangent;
+            m_textInfo.meshInfo[materialIndex].tangents[2 + index_X4] = characterInfoArray[i].vertex_TR.tangent;
+            m_textInfo.meshInfo[materialIndex].tangents[3 + index_X4] = characterInfoArray[i].vertex_BR.tangent;
 
 
             // setup Vertex Colors

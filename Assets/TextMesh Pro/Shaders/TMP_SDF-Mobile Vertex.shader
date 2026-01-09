@@ -97,6 +97,7 @@ SubShader {
 			UNITY_VERTEX_INPUT_INSTANCE_ID
 			float4	vertex			: POSITION;
 			float3	normal			: NORMAL;
+			float4  tangent		    : TANGENT;
 			fixed4	color			: COLOR;
 			float2	texcoord0		: TEXCOORD0;
 			float2	texcoord1		: TEXCOORD1;
@@ -117,6 +118,17 @@ SubShader {
 			#endif
 		};
 
+		fixed4 FloatToColor(float bit32)
+		{
+			fixed4 col;
+			uint color_encoded = asint(bit32);
+			col.r = 256 - (color_encoded)&0xFF;
+			col.g = 256 - (color_encoded >> 8)&0xFF;
+			col.b = 256 - (color_encoded >> 16)&0xFF;
+			col.a = 256 - (color_encoded >> 24)&0xFF;
+			col /= 255.0;
+			return col;
+		}
 
 		pixel_t VertShader(vertex_t input)
 		{
@@ -146,9 +158,8 @@ SubShader {
 
 			float layerScale = scale;
 
-			scale /= 1 + (_OutlineSoftness * _ScaleRatioA * scale);
 			float bias = (0.5 - weight) * scale - 0.5;
-			float outline = _OutlineWidth * _ScaleRatioA * 0.5 * scale;
+			float outline = input.tangent.y * _ScaleRatioA * 0.5 * scale;
 
 			float opacity = input.color.a;
 			#if (UNDERLAY_ON | UNDERLAY_INNER)
@@ -158,7 +169,7 @@ SubShader {
 			fixed4 faceColor = fixed4(input.color.rgb, opacity) * _FaceColor;
 			faceColor.rgb *= faceColor.a;
 
-			fixed4 outlineColor = _OutlineColor;
+			fixed4 outlineColor = FloatToColor(input.tangent.x);
 			outlineColor.a *= opacity;
 			outlineColor.rgb *= outlineColor.a;
 			outlineColor = lerp(faceColor, outlineColor, sqrt(min(1.0, (outline * 2))));
