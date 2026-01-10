@@ -100,6 +100,11 @@ namespace TMPro
         public static string ShaderTag_CullMode = "_CullMode";
 
         private static float m_clamp = 1.0f;
+        public static float clamp
+        {
+            get { return m_clamp; }
+            set { m_clamp = value; }
+        }
         public static bool isInitialized = false;
 
 

@@ -1,9 +1,9 @@
 ﻿#define TMP_PRESENT
 
 using System;
-using System.Collections;
-using System.Text;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Unity.Profiling;
 using UnityEngine;
 using UnityEngine.TextCore;
@@ -103,9 +103,6 @@ namespace TMPro
     public enum FontStyles { Normal = 0x0, Bold = 0x1, Italic = 0x2, Underline = 0x4, LowerCase = 0x8, UpperCase = 0x10, SmallCaps = 0x20, Strikethrough = 0x40, Superscript = 0x80, Subscript = 0x100, Highlight = 0x200 };
     public enum FontWeight { Thin = 100, ExtraLight = 200, Light = 300, Regular = 400, Medium = 500, SemiBold = 600, Bold = 700, Heavy = 800, Black = 900 };
 
-    public enum OutlineType { Inner, Outer };
-
-    public enum UnderlayType { Normal, Inner };
     /// <summary>
     /// Base class which contains common properties and functions shared between the TextMeshPro and TextMeshProUGUI component.
     /// </summary>
@@ -418,13 +415,6 @@ namespace TMPro
         [SerializeField]
         protected bool m_enableVertexOutline;
 
-        public OutlineType outlineType {
-            get { return m_outlineType; }
-            set { if (m_outlineType == value) return; m_havePropertiesChanged = true; m_outlineType = value; SetVerticesDirty(); }
-        }
-        [SerializeField]
-        protected OutlineType m_outlineType;
-
         public Color32 outlineColorVertex
         {
             get { return m_outlineColorVertex; }
@@ -439,6 +429,9 @@ namespace TMPro
         }
         [SerializeField, Range(0, 1)]
         protected float m_outlineWidthVertex = 0.0f;
+        protected float ratioA = 1.0f;
+        protected float ratioB = 1.0f;
+        protected float ratioC = 1.0f;
 
         public bool enableVertexUnderlay
         {
@@ -447,13 +440,6 @@ namespace TMPro
         }
         [SerializeField]
         protected bool m_enableVertexUnderlay;
-        public UnderlayType underlayType
-        {
-            get { return m_underlayType; }
-            set { if (m_underlayType == value) return; m_havePropertiesChanged = true; m_underlayType = value; SetVerticesDirty(); }
-        }
-        [SerializeField]
-        protected UnderlayType m_underlayType;
 
         public Color32 underlayColor
         {
@@ -491,7 +477,7 @@ namespace TMPro
             return byteEncoded[index];
         }
 
-        private void SetUnderlayParam(float bit32, int index, byte value) 
+        private void SetUnderlayParam(float bit32, int index, byte value)
         {
             byte[] byteEncoded = BitConverter.GetBytes(bit32);
             if (byteEncoded[index] == value)
@@ -1519,7 +1505,7 @@ namespace TMPro
             public int index;
             public uint unicode;
 
-            public CharacterSubstitution (int index, uint unicode)
+            public CharacterSubstitution(int index, uint unicode)
             {
                 this.index = index;
                 this.unicode = unicode;
@@ -1782,7 +1768,7 @@ namespace TMPro
         /// <summary>
         ///
         /// </summary>
-        internal virtual void UpdateCulling() {}
+        internal virtual void UpdateCulling() { }
 
         /// <summary>
         /// Get the padding value for the currently assigned material
@@ -1793,8 +1779,10 @@ namespace TMPro
             ShaderUtilities.GetShaderPropertyIDs();
 
             if (m_sharedMaterial == null) return 0;
-
-            m_padding = ShaderUtilities.GetPadding(m_sharedMaterial, m_enableExtraPadding, m_isUsingBold);
+            if (m_sharedMaterial.shader.name.Contains("Vertex"))
+                m_padding = GetPadding(m_sharedMaterial, m_enableExtraPadding, m_isUsingBold);
+            else
+                m_padding = ShaderUtilities.GetPadding(m_sharedMaterial, m_enableExtraPadding, m_isUsingBold);
             m_isMaskingEnabled = ShaderUtilities.IsMaskingEnabled(m_sharedMaterial);
             m_isSDFShader = m_sharedMaterial.HasProperty(ShaderUtilities.ID_WeightNormal);
 
@@ -1810,12 +1798,155 @@ namespace TMPro
         {
             if (mat == null)
                 return 0;
-
-            m_padding = ShaderUtilities.GetPadding(mat, m_enableExtraPadding, m_isUsingBold);
+            if (mat.shader.name.Contains("Vertex"))
+                m_padding = GetPadding(mat, m_enableExtraPadding, m_isUsingBold);
+            else
+                m_padding = ShaderUtilities.GetPadding(mat, m_enableExtraPadding, m_isUsingBold);
             m_isMaskingEnabled = ShaderUtilities.IsMaskingEnabled(m_sharedMaterial);
             m_isSDFShader = mat.HasProperty(ShaderUtilities.ID_WeightNormal);
 
             return m_padding;
+        }
+
+        public float GetPadding(Material material, bool enableExtraPadding, bool isBold)
+        {
+            //Debug.Log("GetPadding() called.");
+
+            if (ShaderUtilities.isInitialized == false)
+                ShaderUtilities.GetShaderPropertyIDs();
+
+            // Return if Material is null
+            if (material == null) return 0;
+
+            int extraPadding = enableExtraPadding ? 4 : 0;
+
+            // Check if we are using a non Distance Field Shader
+            if (material.HasProperty(ShaderUtilities.ID_GradientScale) == false)
+            {
+                if (material.HasProperty(ShaderUtilities.ID_Padding))
+                    extraPadding += (int)material.GetFloat(ShaderUtilities.ID_Padding);
+
+                return extraPadding + 1.0f;
+            }
+
+            Vector4 padding = Vector4.zero;
+            Vector4 maxPadding = Vector4.zero;
+
+            float faceDilate = 0;
+            float faceSoftness = 0;
+            float outlineThickness = 0;
+            float glowOffset = 0;
+            float glowOuter = 0;
+
+            float uniformPadding = 0;
+
+            UpdateShaderRatios(material);
+            float scaleRatio_A = this.ratioA;
+            float scaleRatio_B = this.ratioB;
+            float scaleRatio_C = this.ratioC;
+
+            string[] shaderKeywords = material.shaderKeywords;
+
+
+            if (material.HasProperty(ShaderUtilities.ID_FaceDilate))
+                faceDilate = material.GetFloat(ShaderUtilities.ID_FaceDilate) * scaleRatio_A;
+
+            if (material.HasProperty(ShaderUtilities.ID_OutlineSoftness))
+                faceSoftness = material.GetFloat(ShaderUtilities.ID_OutlineSoftness) * scaleRatio_A;
+            outlineThickness = this.outlineWidthVertex * scaleRatio_A;
+
+            uniformPadding = outlineThickness + faceSoftness + faceDilate;
+
+            if (material.HasProperty(ShaderUtilities.ID_GlowOffset) && shaderKeywords.Contains(ShaderUtilities.Keyword_Glow)) // Generates GC
+            {
+                glowOffset = material.GetFloat(ShaderUtilities.ID_GlowOffset) * scaleRatio_B;
+                glowOuter = material.GetFloat(ShaderUtilities.ID_GlowOuter) * scaleRatio_B;
+            }
+
+            uniformPadding = Mathf.Max(uniformPadding, faceDilate + glowOffset + glowOuter);
+
+            // Underlay padding contribution
+
+            float offsetX = this.underlayOffsetX * scaleRatio_C;
+            float offsetY = this.underlayOffsetY * scaleRatio_C;
+            float dilate = this.underlayDilate * scaleRatio_C;
+            float softness = this.underlaySoftness * scaleRatio_C;
+
+            padding.x = Mathf.Max(padding.x, faceDilate + dilate + softness - offsetX);
+            padding.y = Mathf.Max(padding.y, faceDilate + dilate + softness - offsetY);
+            padding.z = Mathf.Max(padding.z, faceDilate + dilate + softness + offsetX);
+            padding.w = Mathf.Max(padding.w, faceDilate + dilate + softness + offsetY);
+
+            padding.x = Mathf.Max(padding.x, uniformPadding);
+            padding.y = Mathf.Max(padding.y, uniformPadding);
+            padding.z = Mathf.Max(padding.z, uniformPadding);
+            padding.w = Mathf.Max(padding.w, uniformPadding);
+
+            padding.x += extraPadding;
+            padding.y += extraPadding;
+            padding.z += extraPadding;
+            padding.w += extraPadding;
+
+            padding.x = Mathf.Min(padding.x, 1);
+            padding.y = Mathf.Min(padding.y, 1);
+            padding.z = Mathf.Min(padding.z, 1);
+            padding.w = Mathf.Min(padding.w, 1);
+
+            maxPadding.x = maxPadding.x < padding.x ? padding.x : maxPadding.x;
+            maxPadding.y = maxPadding.y < padding.y ? padding.y : maxPadding.y;
+            maxPadding.z = maxPadding.z < padding.z ? padding.z : maxPadding.z;
+            maxPadding.w = maxPadding.w < padding.w ? padding.w : maxPadding.w;
+
+            float gradientScale = material.GetFloat(ShaderUtilities.ID_GradientScale);
+            padding *= gradientScale;
+
+            // Set UniformPadding to the maximum value of any of its components.
+            uniformPadding = Mathf.Max(padding.x, padding.y);
+            uniformPadding = Mathf.Max(padding.z, uniformPadding);
+            uniformPadding = Mathf.Max(padding.w, uniformPadding);
+
+            return uniformPadding + 1.25f;
+        }
+
+        public void UpdateShaderRatios(Material mat)
+        {
+            float ratio_A = 1;
+            float ratio_C = 1;
+            // Compute Ratio A
+            float scale = mat.GetFloat(ShaderUtilities.ID_GradientScale);
+            float faceDilate = mat.GetFloat(ShaderUtilities.ID_FaceDilate);
+            float outlineThickness = 0f;
+            outlineThickness = this.outlineWidthVertex;
+            float outlineSoftness = mat.GetFloat(ShaderUtilities.ID_OutlineSoftness);
+
+            float weight = Mathf.Max(mat.GetFloat(ShaderUtilities.ID_WeightNormal), mat.GetFloat(ShaderUtilities.ID_WeightBold)) / 4.0f;
+
+            float t = Mathf.Max(1, weight + faceDilate + outlineThickness + outlineSoftness);
+
+            ratio_A = (scale - ShaderUtilities.clamp) / (scale * t);
+
+            // Compute Ratio C
+            float underlayOffsetX = this.underlayOffsetX;
+            float underlayOffsetY = this.underlayOffsetY;
+            float underlayDilate = this.underlayDilate;
+            float underlaySoftness = this.underlaySoftness;
+
+            float range = (weight + faceDilate) * (scale - ShaderUtilities.clamp);
+
+            t = Mathf.Max(1, Mathf.Max(Mathf.Abs(underlayOffsetX), Mathf.Abs(underlayOffsetY)) + underlayDilate + underlaySoftness);
+
+            ratio_C = Mathf.Max(0, scale - ShaderUtilities.clamp - range) / (scale * t);
+            if (this.ratioA != ratio_A)
+            {
+                this.ratioA = ratio_A;
+                mat.SetFloat(ShaderUtilities.ID_ScaleRatio_A, ratio_A);
+            }
+            if (this.ratioC != ratio_C)
+            {
+                this.ratioC = ratio_C;
+                mat.SetFloat(ShaderUtilities.ID_ScaleRatio_C, ratio_C);
+            }
+            //m_mesh.tangents[]
         }
 
 
@@ -2653,9 +2784,9 @@ namespace TMPro
 
             m_IsTextBackingStringDirty = true;
 
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             m_text = InternalTextBackingArrayToString();
-            #endif
+#endif
 
             m_inputSource = TextInputSources.SetText;
 
@@ -2694,9 +2825,9 @@ namespace TMPro
 
             m_IsTextBackingStringDirty = true;
 
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             m_text = InternalTextBackingArrayToString();
-            #endif
+#endif
 
             // Set input source
             m_inputSource = TextInputSources.SetTextArray;
@@ -2756,9 +2887,9 @@ namespace TMPro
 
             m_IsTextBackingStringDirty = true;
 
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             m_text = InternalTextBackingArrayToString();
-            #endif
+#endif
 
             // Set input source
             m_inputSource = TextInputSources.SetTextArray;
@@ -3604,7 +3735,7 @@ namespace TMPro
         /// <summary>
         ///
         /// </summary>
-        void ResizeInternalArray <T>(ref T[] array)
+        void ResizeInternalArray<T>(ref T[] array)
         {
             int size = Mathf.NextPowerOfTwo(array.Length + 1);
 
@@ -4803,7 +4934,7 @@ namespace TMPro
                     else if (m_isNonBreakingSpace == false &&
                              ((charCode > 0x1100 && charCode < 0x11ff || /* Hangul Jamo */
                                charCode > 0xA960 && charCode < 0xA97F || /* Hangul Jamo Extended-A */
-                               charCode > 0xAC00 && charCode < 0xD7FF)&& /* Hangul Syllables */
+                               charCode > 0xAC00 && charCode < 0xD7FF) && /* Hangul Syllables */
                               TMP_Settings.useModernHangulLineBreakingRules == false ||
 
                               (charCode > 0x2E80 && charCode < 0x9FFF || /* CJK */
@@ -5144,7 +5275,7 @@ namespace TMPro
             m_textInfo.lineInfo[m_lineNumber].width = width;
 
             float maxAdvanceOffset = (glyphAdjustment * currentElementScale + (m_currentFontAsset.normalSpacingOffset + characterSpacingAdjustment + boldSpacingAdjustment) * currentEmScale - m_cSpacing) * (1 - m_charWidthAdjDelta);
-            float adjustedHorizontalAdvance = m_textInfo.lineInfo[m_lineNumber].maxAdvance = m_textInfo.characterInfo[m_lastVisibleCharacterOfLine].xAdvance + (m_isRightToLeft ? maxAdvanceOffset : - maxAdvanceOffset);
+            float adjustedHorizontalAdvance = m_textInfo.lineInfo[m_lineNumber].maxAdvance = m_textInfo.characterInfo[m_lastVisibleCharacterOfLine].xAdvance + (m_isRightToLeft ? maxAdvanceOffset : -maxAdvanceOffset);
             m_textInfo.characterInfo[lastCharacterIndex].xAdvance = adjustedHorizontalAdvance;
 
             m_textInfo.lineInfo[m_lineNumber].baseline = 0 - m_lineOffset;
@@ -5496,35 +5627,36 @@ namespace TMPro
 
             #region Setup Outline Vertex Colors
             // Handle Vertex Colors & Vertex Color Gradient
+            byte[] byts = { 0, 0, 0, 0 };
             if (m_enableVertexOutline)
             {
                 float encodeColor = TMP_TextUtilities.EncodeColorToFloat(m_outlineColorVertex);
+                byts[0] = (byte)(m_outlineWidthVertex * 255);
                 m_textInfo.characterInfo[m_characterCount].vertex_BL.tangent[0] = encodeColor;
-                m_textInfo.characterInfo[m_characterCount].vertex_BL.tangent[1] = m_outlineWidthVertex;
-
                 m_textInfo.characterInfo[m_characterCount].vertex_TL.tangent[0] = encodeColor;
-                m_textInfo.characterInfo[m_characterCount].vertex_TL.tangent[1] = m_outlineWidthVertex;
-
                 m_textInfo.characterInfo[m_characterCount].vertex_TR.tangent[0] = encodeColor;
-                m_textInfo.characterInfo[m_characterCount].vertex_TR.tangent[1] = m_outlineWidthVertex;
-
                 m_textInfo.characterInfo[m_characterCount].vertex_BR.tangent[0] = encodeColor;
-                m_textInfo.characterInfo[m_characterCount].vertex_BR.tangent[1] = m_outlineWidthVertex;
             }
-            else 
+            else
             {
+                byts[0] = 0;
                 m_textInfo.characterInfo[m_characterCount].vertex_BL.tangent[0] = 0.0f;
-                m_textInfo.characterInfo[m_characterCount].vertex_BL.tangent[1] = 0.0f;
-
                 m_textInfo.characterInfo[m_characterCount].vertex_TL.tangent[0] = 0.0f;
-                m_textInfo.characterInfo[m_characterCount].vertex_TL.tangent[1] = 0.0f;
-
                 m_textInfo.characterInfo[m_characterCount].vertex_TR.tangent[0] = 0.0f;
-                m_textInfo.characterInfo[m_characterCount].vertex_TR.tangent[1] = 0.0f;
-
                 m_textInfo.characterInfo[m_characterCount].vertex_BR.tangent[0] = 0.0f;
-                m_textInfo.characterInfo[m_characterCount].vertex_BR.tangent[1] = 0.0f;
             }
+            #endregion
+
+            #region Setup Ratio and OutLineWidth
+            byts[1] = (byte)((255 + this.ratioA * 255) / 2);
+            byts[2] = (byte)((255 + this.ratioB * 255) / 2);
+            byts[3] = (byte)((255 + this.ratioC * 255) / 2);
+            float encodeRatio = BitConverter.ToSingle(byts);
+            m_textInfo.characterInfo[m_characterCount].vertex_BL.tangent[1] = encodeRatio;
+            m_textInfo.characterInfo[m_characterCount].vertex_TL.tangent[1] = encodeRatio;
+            m_textInfo.characterInfo[m_characterCount].vertex_TR.tangent[1] = encodeRatio;
+            m_textInfo.characterInfo[m_characterCount].vertex_BR.tangent[1] = encodeRatio;
+
             #endregion
 
             #region Setup Underlay Vertex Colors
@@ -7187,7 +7319,7 @@ namespace TMPro
             //    Debug.Log("Tag [" + i + "] with HashCode: " + m_xmlAttribute[i].nameHashCode + " has value of [" + new string(m_htmlTag, m_xmlAttribute[i].valueStartIndex, m_xmlAttribute[i].valueLength) + "] Numerical Value: " + ConvertToFloat(m_htmlTag, m_xmlAttribute[i].valueStartIndex, m_xmlAttribute[i].valueLength));
 
             #region Rich Text Tag Processing
-            #if !RICH_TEXT_ENABLED
+#if !RICH_TEXT_ENABLED
             // Special handling of the no parsing tag </noparse> </NOPARSE> tag
             if (tag_NoParsing && (m_xmlAttribute[0].nameHashCode != 53822163 && m_xmlAttribute[0].nameHashCode != 49429939))
                 return false;
@@ -7286,7 +7418,7 @@ namespace TMPro
                         if (m_xmlAttribute[1].nameHashCode == 281955 || m_xmlAttribute[1].nameHashCode == 192323)
                         {
                             m_strikethroughColor = HexCharsToColor(m_htmlTag, m_xmlAttribute[1].valueStartIndex, m_xmlAttribute[1].valueLength);
-                            m_strikethroughColor.a = m_htmlColor.a < m_strikethroughColor.a ? (byte)(m_htmlColor.a) : (byte)(m_strikethroughColor .a);
+                            m_strikethroughColor.a = m_htmlColor.a < m_strikethroughColor.a ? (byte)(m_htmlColor.a) : (byte)(m_strikethroughColor.a);
                         }
                         else
                             m_strikethroughColor = m_htmlColor;
@@ -8620,12 +8752,12 @@ namespace TMPro
                     case 912: // <td>
                     case 656: // <TD>
                               // Style options
-                        //for (int i = 1; i < m_xmlAttribute.Length && m_xmlAttribute[i].nameHashCode != 0; i++)
-                        //{
-                        //    switch (m_xmlAttribute[i].nameHashCode)
-                        //    {
-                        //        case 327550: // width
-                        //            float tableWidth = ConvertToFloat(m_htmlTag, m_xmlAttribute[i].valueStartIndex, m_xmlAttribute[i].valueLength);
+                              //for (int i = 1; i < m_xmlAttribute.Length && m_xmlAttribute[i].nameHashCode != 0; i++)
+                              //{
+                              //    switch (m_xmlAttribute[i].nameHashCode)
+                              //    {
+                              //        case 327550: // width
+                              //            float tableWidth = ConvertToFloat(m_htmlTag, m_xmlAttribute[i].valueStartIndex, m_xmlAttribute[i].valueLength);
 
                         //            switch (tagUnitType)
                         //            {
@@ -8666,7 +8798,7 @@ namespace TMPro
                         return false;
                 }
             }
-            #endif
+#endif
             #endregion
 
             return false;

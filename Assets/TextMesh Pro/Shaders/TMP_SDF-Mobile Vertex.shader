@@ -9,23 +9,10 @@ Properties {
 	[HDR]_FaceColor     ("Face Color", Color) = (1,1,1,1)
 	_FaceDilate			("Face Dilate", Range(-1,1)) = 0
 
-	[HDR]_OutlineColor	("Outline Color", Color) = (0,0,0,1)
-	_OutlineWidth		("Outline Thickness", Range(0,1)) = 0
 	_OutlineSoftness	("Outline Softness", Range(0,1)) = 0
-
-	[HDR]_UnderlayColor	("Border Color", Color) = (0,0,0,.5)
-	_UnderlayOffsetX 	("Border OffsetX", Range(-1,1)) = 0
-	_UnderlayOffsetY 	("Border OffsetY", Range(-1,1)) = 0
-	_UnderlayDilate		("Border Dilate", Range(-1,1)) = 0
-	_UnderlaySoftness 	("Border Softness", Range(0,1)) = 0
 
 	_WeightNormal		("Weight Normal", float) = 0
 	_WeightBold			("Weight Bold", float) = .5
-
-	_ShaderFlags		("Flags", float) = 0
-	_ScaleRatioA		("Scale RatioA", float) = 1
-	_ScaleRatioB		("Scale RatioB", float) = 1
-	_ScaleRatioC		("Scale RatioC", float) = 1
 
 	_MainTex			("Font Atlas", 2D) = "white" {}
 	_TextureWidth		("Texture Width", float) = 512
@@ -114,7 +101,8 @@ SubShader {
 			half4	mask			: TEXCOORD2;			// Position in clip space(xy), Softness(zw)
 			#if (UNDERLAY_ON | UNDERLAY_INNER)
 			float4	texcoord1		: TEXCOORD3;			// Texture UV, alpha, reserved
-			half2	underlayParam	: TEXCOORD4;			// Scale(x), Bias(y)
+			fixed4  underlayColor   : TEXCOORD4;
+			half2	underlayParam	: TEXCOORD5;			// Scale(x), Bias(y)
 			#endif
 		};
 
@@ -128,6 +116,28 @@ SubShader {
 			col.a = 256 - (color_encoded >> 24)&0xFF;
 			col /= 255.0;
 			return col;
+		}
+
+		fixed4 FloatToULPS(float bit32)
+		{
+			fixed4 bts;
+			uint enBt = asint(bit32);
+			bts.x = (enBt&0xFF) * 2 / 255.0 - 1;
+			bts.y = ((enBt >> 8)&0xFF) * 2 / 255.0 - 1;
+			bts.z = ((enBt >> 16)&0xFF) * 2 / 255.0 - 1;
+			bts.w = ((enBt >> 24)&0xFF) / 255.0;
+			return bts;
+		}
+
+		float4 FloatToRatio(float bit32)
+		{
+			float4 ratio;
+			uint encoded = asint(bit32);
+			ratio.x = (encoded&0xFF) / 255.0;
+			ratio.y = ((encoded >> 8)&0xFF) * 2 / 255.0 - 1;
+			ratio.z = ((encoded >> 16)&0xFF) * 2 / 255.0 - 1;
+			ratio.w = ((encoded >> 24)&0xFF) * 2 / 255.0 - 1;
+			return ratio;
 		}
 
 		pixel_t VertShader(vertex_t input)
@@ -153,13 +163,16 @@ SubShader {
 			scale *= abs(input.texcoord1.y) * _GradientScale * (_Sharpness + 1);
 			if(UNITY_MATRIX_P[3][3] == 0) scale = lerp(abs(scale) * (1 - _PerspectiveFilter), scale, abs(dot(UnityObjectToWorldNormal(input.normal.xyz), normalize(WorldSpaceViewDir(vert)))));
 
+			fixed4 outlineColor = FloatToColor(input.tangent.x);
+			float4 ratios = FloatToRatio(input.tangent.y);
+
 			float weight = lerp(_WeightNormal, _WeightBold, bold) / 4.0;
-			weight = (weight + _FaceDilate) * _ScaleRatioA * 0.5;
+			weight = (weight + _FaceDilate) * ratios.y * 0.5;
 
 			float layerScale = scale;
 
 			float bias = (0.5 - weight) * scale - 0.5;
-			float outline = input.tangent.y * _ScaleRatioA * 0.5 * scale;
+			float outline =  ratios.x * ratios.y * 0.5 * scale;
 
 			float opacity = input.color.a;
 			#if (UNDERLAY_ON | UNDERLAY_INNER)
@@ -169,17 +182,18 @@ SubShader {
 			fixed4 faceColor = fixed4(input.color.rgb, opacity) * _FaceColor;
 			faceColor.rgb *= faceColor.a;
 
-			fixed4 outlineColor = FloatToColor(input.tangent.x);
 			outlineColor.a *= opacity;
 			outlineColor.rgb *= outlineColor.a;
 			outlineColor = lerp(faceColor, outlineColor, sqrt(min(1.0, (outline * 2))));
 
 			#if (UNDERLAY_ON | UNDERLAY_INNER)
-			layerScale /= 1 + ((_UnderlaySoftness * _ScaleRatioC) * layerScale);
-			float layerBias = (.5 - weight) * layerScale - .5 - ((_UnderlayDilate * _ScaleRatioC) * .5 * layerScale);
+			fixed4 ulps = FloatToULPS(input.tangent.w);
+			layerScale /= 1 + ((ulps.w * ratios.w) * layerScale);
+			float layerBias = (.5 - weight) * layerScale - .5 - ((ulps.z * ratios.w) * .5 * layerScale);
+			fixed4 underlayColor = FloatToColor(input.tangent.z);
 
-			float x = -(_UnderlayOffsetX * _ScaleRatioC) * _GradientScale / _TextureWidth;
-			float y = -(_UnderlayOffsetY * _ScaleRatioC) * _GradientScale / _TextureHeight;
+			float x = -(ulps.x * ratios.w) * _GradientScale / _TextureWidth;
+			float y = -(ulps.y * ratios.w) * _GradientScale / _TextureHeight;
 			float2 layerOffset = float2(x, y);
 			#endif
 
@@ -196,6 +210,7 @@ SubShader {
 			output.mask = half4(vert.xy * 2 - clampedRect.xy - clampedRect.zw, 0.25 / (0.25 * half2(_MaskSoftnessX, _MaskSoftnessY) + pixelSize.xy));
 			#if (UNDERLAY_ON || UNDERLAY_INNER)
 			output.texcoord1 = float4(input.texcoord0 + layerOffset, input.color.a, 0);
+			output.underlayColor = underlayColor;
 			output.underlayParam = half2(layerScale, layerBias);
 			#endif
 
@@ -224,13 +239,13 @@ SubShader {
 
 			#if UNDERLAY_ON
 			d = tex2D(_MainTex, input.texcoord1.xy).a * input.underlayParam.x;
-			c += float4(_UnderlayColor.rgb * _UnderlayColor.a, _UnderlayColor.a) * saturate(d - input.underlayParam.y) * (1 - c.a);
+			c += float4(input.underlayColor.rgb * input.underlayColor.a, input.underlayColor.a) * saturate(d - input.underlayParam.y) * (1 - c.a);
 			#endif
 
 			#if UNDERLAY_INNER
 			half sd = saturate(d - input.param.z);
 			d = tex2D(_MainTex, input.texcoord1.xy).a * input.underlayParam.x;
-			c += float4(_UnderlayColor.rgb * _UnderlayColor.a, _UnderlayColor.a) * (1 - saturate(d - input.underlayParam.y)) * sd * (1 - c.a);
+			c += float4(input.underlayColor.rgb * input.underlayColor.a, input.underlayColor.a) * (1 - saturate(d - input.underlayParam.y)) * sd * (1 - c.a);
 			#endif
 
 			// Alternative implementation to UnityGet2DClipping with support for softness.

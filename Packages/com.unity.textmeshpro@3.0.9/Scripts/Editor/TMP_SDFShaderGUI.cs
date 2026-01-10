@@ -23,7 +23,7 @@ namespace TMPro.EditorUtilities
                 label = new GUIContent("Outline Type"),
                 keywordLabels = new[]
                 {
-                    new GUIContent("None"), new GUIContent("Normal"), new GUIContent("Outer")
+                    new GUIContent("None"), new GUIContent("Inner"), new GUIContent("Outer")
                 }
             };
 
@@ -90,7 +90,7 @@ namespace TMPro.EditorUtilities
                 EndPanel();
             }
 
-            if (m_Material.HasProperty(ShaderUtilities.ID_UnderlayColor))
+            if (m_Material.HasProperty(ShaderUtilities.ID_UnderlayColor) || m_Material.shader.name.Contains("Vertex"))
             {
                 s_Underlay = BeginPanel("Underlay", s_UnderlayFeature, s_Underlay);
                 if (s_Underlay)
@@ -244,8 +244,13 @@ namespace TMPro.EditorUtilities
         void DoOutlinePanel()
         {
             EditorGUI.indentLevel += 1;
-            if (m_Material.shader.name.Contains("Vertex"))
+            if (m_Material.shader.name.Contains("Vertex")) 
+            {
                 s_OutlineFeature.DoPopup(m_Editor, m_Material);
+                EditorGUI.indentLevel -= 1;
+                EditorGUILayout.Space();
+                return;
+            }
 
             DoColor("_OutlineColor", "Color");
             if (m_Material.HasProperty(ShaderUtilities.ID_OutlineTex))
@@ -299,8 +304,9 @@ namespace TMPro.EditorUtilities
 
         void DoUnderlayPanel()
         {
+            if (m_Material.shader.name.Contains("Vertex"))
+                return;
             EditorGUI.indentLevel += 1;
-            s_UnderlayFeature.DoPopup(m_Editor, m_Material);
             DoColor("_UnderlayColor", "Color");
             DoSlider("_UnderlayOffsetX", "Offset X");
             DoSlider("_UnderlayOffsetY", "Offset Y");
