@@ -307,6 +307,7 @@ namespace TMPro.EditorUtilities
             if (m_Material.shader.name.Contains("Vertex"))
                 return;
             EditorGUI.indentLevel += 1;
+            s_UnderlayFeature.DoPopup(m_Editor, m_Material);
             DoColor("_UnderlayColor", "Color");
             DoSlider("_UnderlayOffsetX", "Offset X");
             DoSlider("_UnderlayOffsetY", "Offset Y");
