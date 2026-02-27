@@ -118,7 +118,7 @@ Material:
     - _ReceiveShadows: 1
     - _ScaleRatioA: 0.9
     - _ScaleRatioB: 1
-    - _ScaleRatioC: 0.365625
+    - _ScaleRatioC: 0.32485846
     - _ScaleX: 1
     - _ScaleY: 1
     - _ShaderFlags: 0
