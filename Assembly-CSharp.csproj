@@ -103,7 +103,12 @@
     <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\DefaultTypes\GhostSnapshotValueFloat4.NetCodeSourceGenerator.additionalfile" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Framework\YooAsset\YooInitializePackage.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
+    <Compile Include="Assets\Scripts\Framework\YooAsset\YooDownloadPackage.cs" />
+    <Compile Include="Assets\Scripts\Framework\YooAsset\YooClearCacheBundle.cs" />
+    <Compile Include="Assets\Scripts\Framework\YooAsset\YooRequestVersion.cs" />
+    <Compile Include="Assets\Scripts\Framework\YooAsset\YooUpdateManifest.cs" />
     <Compile Include="Assets\Scripts\Framework\YooAsset\YooAuthoring.cs" />
     <Compile Include="Assets\Scripts\Framework\YooAsset\YooSystem.cs" />
     <Compile Include="Assets\Scripts\Framework\YooAsset\PackageSettings.cs" />

@@ -1,5 +1,4 @@
-using System.Collections;
-using Unity.Entities;
+﻿using Unity.Entities;
 using YooAsset;
 using static Unity.Entities.SystemAPI;
 
@@ -7,12 +6,7 @@ namespace To2.Framework.YooAsset
 {
     public partial class YooSystem : SystemBase
     {
-        private PackageSettings PackageSettings;
-
-        protected override void OnCreate()
-        {
-            base.OnCreate();
-        }
+        PackageSettings PackageSettings;
 
         protected override void OnUpdate()
         {
@@ -21,26 +15,17 @@ namespace To2.Framework.YooAsset
                 var valueRW = component.ValueRW;
                 switch (valueRW.PackageStatus)
                 {
-                    case YooStatus.None:
-                        break;
-                    case YooStatus.InitializePackage:
-                        InitPackage(valueRW);
-                        break;
-                    case YooStatus.RequestVersion:
-                        break;
-                    case YooStatus.UpdateManifest:
-                        break;
-                    case YooStatus.CreateDownloader:
-                        break;
-                    case YooStatus.DownloadPackage:
-                        break;
-                    case YooStatus.ClearCacheBundle:
-                        break;
+                    case YooStatus.None:                                            break;
+                    case YooStatus.InitializePackage:   InitPackage(valueRW);       break;
+                    case YooStatus.RequestVersion:      RequestVersion(valueRW);    break;
+                    case YooStatus.UpdateManifest:      UpdateManifest(valueRW);    break;
+                    case YooStatus.DownloadPackage:     DownloadPackage(valueRW);   break;
+                    case YooStatus.ClearCacheBundle:    ClearCacheBundle(valueRW);  break;
                 }
             }
         }
 
-        private PackageSetting GetPackage(int ID)
+        protected PackageSetting GetPackageSetting(int ID)
         {
             if (PackageSettings == null || PackageSettings.Packages == null || PackageSettings.Packages.Length == 0)
                 return null;
@@ -101,61 +86,10 @@ namespace To2.Framework.YooAsset
             }
         }
 
-        private IEnumerator InitPackage(YooComponent componet)
-        {
-            if (componet.Status == EOperationStatus.None)
-            {
-                var packageSetting = GetPackage(componet.PackageID);
-                if (packageSetting == null)
-                    yield return null;
-                //创建资源包裹类
-                var package = YooAssets.TryGetPackage(packageSetting.Name);
-                if (package == null)
-                    package = YooAssets.CreatePackage(packageSetting.Name);
-
-                // 编辑器下的模拟模式
-                InitializationOperation initializationOperation = null;
-                if (PackageSettings.PlayMode == EPlayMode.EditorSimulateMode)
-                {
-                    var buildResult = EditorSimulateModeHelper.SimulateBuild(packageSetting.Name);
-                    var packageRoot = buildResult.PackageRootDirectory;
-                    var createParameters = new EditorSimulateModeParameters();
-                    createParameters.EditorFileSystemParameters = FileSystemParameters.CreateDefaultEditorFileSystemParameters(packageRoot);
-                    initializationOperation = package.InitializeAsync(createParameters);
-                }
-
-                // 单机运行模式
-                if (PackageSettings.PlayMode == EPlayMode.OfflinePlayMode)
-                {
-                    var createParameters = new OfflinePlayModeParameters();
-                    createParameters.BuildinFileSystemParameters = FileSystemParameters.CreateDefaultBuildinFileSystemParameters();
-                    initializationOperation = package.InitializeAsync(createParameters);
-                }
-
-                // 联机运行模式
-                if (PackageSettings.PlayMode == EPlayMode.HostPlayMode)
-                {
-                    string defaultHostServer = GetHostServerURL(packageSetting);
-                    string fallbackHostServer = GetHostServerURL(packageSetting);
-                    IRemoteServices remoteServices = new RemoteServices(defaultHostServer, fallbackHostServer);
-                    var createParameters = new HostPlayModeParameters();
-                    createParameters.BuildinFileSystemParameters = null;
-                    createParameters.CacheFileSystemParameters = FileSystemParameters.CreateDefaultCacheFileSystemParameters(remoteServices);
-                    initializationOperation = package.InitializeAsync(createParameters);
-                }
-
-                yield return initializationOperation;
-
-                // 如果初始化失败弹出提示界面
-                if (initializationOperation.Status != EOperationStatus.Succeed)
-                {
-
-                }
-                else
-                {
-                }
-            }
-            yield return null;
-        }
+        private partial void InitPackage(YooComponent componet);
+        private partial void RequestVersion(YooComponent componet);
+        private partial void UpdateManifest(YooComponent componet);
+        private partial void DownloadPackage(YooComponent componet);
+        private partial void ClearCacheBundle(YooComponent componet);
     }
 }
