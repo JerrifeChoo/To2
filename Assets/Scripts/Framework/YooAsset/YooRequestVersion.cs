@@ -1,45 +1,47 @@
 ﻿
+using Unity.Entities;
 using YooAsset;
 
 namespace To2.Framework.YooAsset
 {
     public partial struct YooSystem
     {
-        private void RequestVersion(ref YooComponent component)
+        private void RequestVersion(RefRW<YooComponent> yoo)
         {
-            if (component.Status == EOperationStatus.None)
+            if (yoo.ValueRW.Status == EOperationStatus.None)
             {
-                var packageSetting = GetPackageSetting(component.PackageID);
+                var packageSetting = GetPackageSetting(yoo.ValueRW.PackageID);
                 if (packageSetting == null)
                 {
-                    component.Status = EOperationStatus.Failed;
+                    yoo.ValueRW.Status = EOperationStatus.Failed;
                     return;
                 }
                 var package = YooAssets.GetPackage(packageSetting.Name);
                 if (package == null)
                 {
-                    component.Status = EOperationStatus.Failed;
+                    yoo.ValueRW.Status = EOperationStatus.Failed;
                     return;
                 }
                 var operation = package.RequestPackageVersionAsync();
                 packageSetting.operation = operation;
-                component.Status = operation.Status;
+                yoo.ValueRW.Status = operation.Status;
             }
-            else if (component.Status == EOperationStatus.Processing)
+            else if (yoo.ValueRW.Status == EOperationStatus.Processing)
             {
-                var packageSetting = GetPackageSetting(component.PackageID);
+                var packageSetting = GetPackageSetting(yoo.ValueRW.PackageID);
                 if (packageSetting.operation == null)
-                    component.Status = EOperationStatus.Failed;
+                    yoo.ValueRW.Status = EOperationStatus.Failed;
                 else
-                    component.Status = packageSetting.operation.Status;
+                    yoo.ValueRW.Status = packageSetting.operation.Status;
             }
-            else if (component.Status == EOperationStatus.Failed)
+            else if (yoo.ValueRW.Status == EOperationStatus.Failed)
             {
+                yoo.ValueRW.PackageStatus = YooStatus.Error;
             }
-            else if (component.Status == EOperationStatus.Succeed)
+            else if (yoo.ValueRW.Status == EOperationStatus.Succeed)
             {
-                component.PackageStatus = YooStatus.UpdateManifest;
-                component.Status = EOperationStatus.None;
+                yoo.ValueRW.PackageStatus = YooStatus.UpdateManifest;
+                yoo.ValueRW.Status = EOperationStatus.None;
             }
         }
     }

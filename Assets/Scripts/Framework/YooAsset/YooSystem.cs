@@ -1,5 +1,4 @@
-﻿using Unity.Collections;
-using Unity.Entities;
+﻿using Unity.Entities;
 using YooAsset;
 using static Unity.Entities.SystemAPI;
 
@@ -9,26 +8,41 @@ namespace To2.Framework.YooAsset
     {
         private static PackageSettings PackageSettings;
 
+        public void OnCreate(ref SystemState state)
+        {
+            state.RequireForUpdate<ExecuteMainThread>();
+        }
+
         public void OnUpdate(ref SystemState state)
         {
-            //var watch = System.Diagnostics.Stopwatch.StartNew();
-            ComponentLookup<YooComponent> yooLookup = state.GetComponentLookup<YooComponent>();
-            var entities = QueryBuilder().WithAll<YooComponent>().Build().ToEntityArray(Allocator.Temp);
-            foreach (var entity in entities)
+            foreach (var (yoo, entity) in Query<RefRW<YooComponent>>().WithEntityAccess())
             {
-                var component = yooLookup[entity];
-                switch (component.PackageStatus)
+                switch (yoo.ValueRW.PackageStatus)
                 {
-                    case YooStatus.None:                                                    break;
-                    case YooStatus.InitializePackage:   InitPackage(ref component);         break;
-                    case YooStatus.RequestVersion:      RequestVersion(ref component);      break;
-                    case YooStatus.UpdateManifest:      UpdateManifest(ref component);      break;
-                    case YooStatus.DownloadPackage:     DownloadPackage(ref component);     break;
-                    case YooStatus.ClearCacheBundle:    ClearCacheBundle(ref component);    break;
+                    case YooStatus.None:
+                        break;
+                    case YooStatus.InitializePackage:
+                        InitPackage(yoo);
+                        yoo.ValueRW.Status = EOperationStatus.Failed;
+                        break;
+                    case YooStatus.RequestVersion:
+                        RequestVersion(yoo);
+                        break;
+                    case YooStatus.UpdateManifest:
+                        UpdateManifest(yoo);
+                        break;
+                    case YooStatus.DownloadPackage:
+                        DownloadPackage(yoo);
+                        break;
+                    case YooStatus.ClearCacheBundle:
+                        ClearCacheBundle(yoo);
+                        break;
+                    case YooStatus.Error:
+                        UnityEngine.Debug.LogError("======================");
+                        SetComponentEnabled<YooComponent>(entity, false);
+                        break;
                 }
-                yooLookup.SetComponentEnabled(entity, component.Status != EOperationStatus.Failed);
             }
-            //watch.Stop();
         }
 
         public PackageSetting GetPackageSetting(int ID)

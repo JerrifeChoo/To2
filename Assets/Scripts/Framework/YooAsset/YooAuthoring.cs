@@ -13,6 +13,7 @@ namespace To2.Framework.YooAsset
         CreateDownloader,
         DownloadPackage,
         ClearCacheBundle,
+        Error,
     }
 
     public struct YooComponent : IComponentData, IEnableableComponent

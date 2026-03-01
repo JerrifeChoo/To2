@@ -58,52 +58,10 @@
     <Analyzer Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.entities@1.4.3\Unity.Entities\SourceGenerators\Unity.Entities.Analyzer.CodeFixes.dll" />
     <Analyzer Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.entities@1.4.3\Unity.Entities\SourceGenerators\SystemGenerator.SystemAPI.Query.dll" />
     <Analyzer Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.entities@1.4.3\Unity.Entities\SourceGenerators\SystemGenerator.Common.dll" />
-    <Analyzer Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\NetCodeSourceGenerator.dll" />
-    <Analyzer Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\NetCodeAnalyzers.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\DefaultTypes\GhostSnapshotValueSByte.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\DefaultTypes\GhostSnapshotValueFloatUnquantized.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\DefaultTypes\GhostSnapshotValueFixedString32Bytes.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\DefaultTypes\GhostSnapshotValueDouble.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\DefaultTypes\GhostSnapshotValueUInt.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\DefaultTypes\GhostSnapshotValueDoubleUnquantized.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\FixedList\GhostFixedListElement.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\DefaultTypes\GhostSnapshotValueBool.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\FixedList\GhostFixedListSnapshotHelpers.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\DefaultTypes\GhostSnapshotValueFixedString512Bytes.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\DefaultTypes\GhostSnapshotValueFloat2.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\GhostComponentSerializer.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\DefaultTypes\GhostSnapshotValueUShort.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\DefaultTypes\GhostSnapshotValueULong.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\FixedList\GhostSnapshotFixedList.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\CommandDataSerializer.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\DefaultTypes\GhostSnapshotValueFloat4Unquantized.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\DefaultTypes\GhostSnapshotValueNetworkEndpoint.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\FixedList\GhostFixedListCommandHelper.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\DefaultTypes\GhostSnapshotValueShort.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\GhostComponentSerializerRegistrationSystem.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\DefaultTypes\GhostSnapshotValueQuaternion.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\DefaultTypes\GhostSnapshotValueFloat3.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\DefaultTypes\GhostSnapshotValueByte.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\DefaultTypes\GhostSnapshotValueFloat3Unquantized.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\DefaultTypes\GhostSnapshotValueLong.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\DefaultTypes\GhostSnapshotValueFloat2Unquantized.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\FixedList\GhostFixedListContainer.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\DefaultTypes\GhostSnapshotValueQuaternionUnquantized.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\DefaultTypes\GhostSnapshotValueEntity.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\InputSynchronization.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\DefaultTypes\GhostSnapshotValueInt.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\DefaultTypes\GhostSnapshotValueFixedString64Bytes.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\RpcCommandSerializer.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\DefaultTypes\GhostSnapshotValueFixedString128Bytes.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\DefaultTypes\GhostSnapshotValueFloat.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\DefaultTypes\GhostSnapshotValueFixedString4096Bytes.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\DefaultTypes\GhostSnapshotValueNetworkTick.NetCodeSourceGenerator.additionalfile" />
-    <AdditionalFiles Include="E:\Unity\Projects\To2\Library\PackageCache\com.unity.netcode@1.10.0\Runtime\SourceGenerators\Templates\DefaultTypes\GhostSnapshotValueFloat4.NetCodeSourceGenerator.additionalfile" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Framework\YooAsset\YooInitializePackage.cs" />
+    <Compile Include="Assets\Scripts\Framework\ExecuteAuthoring.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\Framework\YooAsset\YooDownloadPackage.cs" />
     <Compile Include="Assets\Scripts\Framework\YooAsset\YooClearCacheBundle.cs" />
@@ -1051,10 +1009,6 @@
       <HintPath>Library\ScriptAssemblies\Unity.Entities.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Unity.Networking.Transport">
-      <HintPath>Library\ScriptAssemblies\Unity.Networking.Transport.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Unity.Rider.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Rider.Editor.dll</HintPath>
       <Private>False</Private>
@@ -1115,14 +1069,6 @@
       <HintPath>Library\ScriptAssemblies\Unity.PlasticSCM.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Unity.NetCode.Drawers.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.NetCode.Drawers.Editor.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Unity.NetCode">
-      <HintPath>Library\ScriptAssemblies\Unity.NetCode.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Unity.Deformations">
       <HintPath>Library\ScriptAssemblies\Unity.Deformations.dll</HintPath>
       <Private>False</Private>
@@ -1141,10 +1087,6 @@
     </Reference>
     <Reference Include="Unity.VSCode.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.VSCode.Editor.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Unity.NetCode.Physics">
-      <HintPath>Library\ScriptAssemblies\Unity.NetCode.Physics.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Profiling.Core">
@@ -1171,24 +1113,12 @@
       <HintPath>Library\ScriptAssemblies\Unity.Numerics.Memory.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Unity.NetCode.Hybrid">
-      <HintPath>Library\ScriptAssemblies\Unity.NetCode.Hybrid.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Unity.RenderPipelines.Universal.Runtime">
       <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Universal.Runtime.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Burst">
       <HintPath>Library\ScriptAssemblies\Unity.Burst.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Unity.NetCode.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.NetCode.Editor.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Unity.NetCode.Physics.Hybrid">
-      <HintPath>Library\ScriptAssemblies\Unity.NetCode.Physics.Hybrid.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Timeline.Editor">
@@ -1201,10 +1131,6 @@
     </Reference>
     <Reference Include="Unity.ShaderGraph.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.ShaderGraph.Editor.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Unity.NetCode.Authoring.Hybrid">
-      <HintPath>Library\ScriptAssemblies\Unity.NetCode.Authoring.Hybrid.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.VisualStudio.Editor">
@@ -1301,10 +1227,6 @@
     </Reference>
     <Reference Include="Unity.RenderPipelines.Universal.Shaders">
       <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Universal.Shaders.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Unity.Networking.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.Networking.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="YooAsset.Editor">

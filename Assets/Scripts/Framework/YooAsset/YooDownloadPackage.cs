@@ -1,23 +1,24 @@
-﻿using YooAsset;
+﻿using Unity.Entities;
+using YooAsset;
 
 namespace To2.Framework.YooAsset
 {
     public partial struct YooSystem
     {
-        private void DownloadPackage(ref YooComponent component)
+        private void DownloadPackage(RefRW<YooComponent> yoo)
         {
-            if (component.Status == EOperationStatus.None)
+            if (yoo.ValueRW.Status == EOperationStatus.None)
             {
-                var packageSetting = GetPackageSetting(component.PackageID);
+                var packageSetting = GetPackageSetting(yoo.ValueRW.PackageID);
                 if (packageSetting == null)
                 {
-                    component.Status = EOperationStatus.Failed;
+                    yoo.ValueRW.Status = EOperationStatus.Failed;
                     return;
                 }
                 var package = YooAssets.GetPackage(packageSetting.Name);
                 if (package == null)
                 {
-                    component.Status = EOperationStatus.Failed;
+                    yoo.ValueRW.Status = EOperationStatus.Failed;
                     return;
                 }
                 int downloadingMaxNum = 10;
@@ -25,7 +26,7 @@ namespace To2.Framework.YooAsset
                 var downloader = package.CreateResourceDownloader(downloadingMaxNum, failedTryAgain);
                 if (downloader.TotalDownloadCount == 0)
                 {
-                    component.Status = EOperationStatus.Succeed;
+                    yoo.ValueRW.Status = EOperationStatus.Succeed;
                 }
                 else
                 {
@@ -33,21 +34,22 @@ namespace To2.Framework.YooAsset
                     //downloader.DownloadErrorCallback = ;
                     //downloader.DownloadUpdateCallback = ;
                     packageSetting.operation = downloader;
-                    component.Status = downloader.Status;
+                    yoo.ValueRW.Status = downloader.Status;
                 }
             }
-            else if (component.Status == EOperationStatus.Succeed)
+            else if (yoo.ValueRW.Status == EOperationStatus.Succeed)
             {
-                var packageSetting = GetPackageSetting(component.PackageID);
+                var packageSetting = GetPackageSetting(yoo.ValueRW.PackageID);
                 if (packageSetting.operation == null)
-                    component.Status = EOperationStatus.Failed;
+                    yoo.ValueRW.Status = EOperationStatus.Failed;
                 else
-                    component.Status = packageSetting.operation.Status;
+                    yoo.ValueRW.Status = packageSetting.operation.Status;
             }
-            else if (component.Status == EOperationStatus.Failed)
+            else if (yoo.ValueRW.Status == EOperationStatus.Failed)
             {
+                yoo.ValueRW.PackageStatus = YooStatus.Error;
             }
-            else if (component.Status == EOperationStatus.Succeed)
+            else if (yoo.ValueRW.Status == EOperationStatus.Succeed)
             {
             }
         }
