@@ -34,17 +34,15 @@ namespace To2.Framework.YooAsset
                     createParameters.EditorFileSystemParameters = FileSystemParameters.CreateDefaultEditorFileSystemParameters(packageRoot);
                     operation = package.InitializeAsync(createParameters);
                 }
-
                 // 单机运行模式
-                if (PackageSettings.PlayMode == EPlayMode.OfflinePlayMode)
+                else if (PackageSettings.PlayMode == EPlayMode.OfflinePlayMode)
                 {
                     var createParameters = new OfflinePlayModeParameters();
                     createParameters.BuildinFileSystemParameters = FileSystemParameters.CreateDefaultBuildinFileSystemParameters();
                     operation = package.InitializeAsync(createParameters);
                 }
-
                 // 联机运行模式
-                if (PackageSettings.PlayMode == EPlayMode.HostPlayMode)
+                else if (PackageSettings.PlayMode == EPlayMode.HostPlayMode)
                 {
                     string defaultHostServer = GetHostServerURL(packageSetting);
                     string fallbackHostServer = GetHostServerURL(packageSetting);
@@ -53,6 +51,23 @@ namespace To2.Framework.YooAsset
                     createParameters.BuildinFileSystemParameters = null;
                     createParameters.CacheFileSystemParameters = FileSystemParameters.CreateDefaultCacheFileSystemParameters(remoteServices);
                     operation = package.InitializeAsync(createParameters);
+                }
+                // WebGL运行模式
+                else if (PackageSettings.PlayMode == EPlayMode.WebPlayMode)
+                {
+#if UNITY_WEBGL && WEIXINMINIGAME && !UNITY_EDITOR
+                    var createParameters = new WebPlayModeParameters();
+			        string defaultHostServer = GetHostServerURL();
+                    string fallbackHostServer = GetHostServerURL();
+                    string packageRoot = $"{WeChatWASM.WX.env.USER_DATA_PATH}/__GAME_FILE_CACHE"; //注意：如果有子目录，请修改此处！
+                    IRemoteServices remoteServices = new RemoteServices(defaultHostServer, fallbackHostServer);
+                    createParameters.WebServerFileSystemParameters = WechatFileSystemCreater.CreateFileSystemParameters(packageRoot, remoteServices);
+                    operation = package.InitializeAsync(createParameters);
+#else
+                    var createParameters = new WebPlayModeParameters();
+                    createParameters.WebServerFileSystemParameters = FileSystemParameters.CreateDefaultWebServerFileSystemParameters();
+                    operation = package.InitializeAsync(createParameters);
+#endif
                 }
                 packageSetting.operation = operation;
                 yoo.ValueRW.Status = operation.Status;
