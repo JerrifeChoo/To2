@@ -3,7 +3,7 @@ using YooAsset;
 
 namespace To2.Framework.YooAsset
 {
-    public partial class YooSystem
+    public partial struct YooSystem
     {
         private void RequestVersion(ref YooComponent component)
         {

@@ -5,13 +5,14 @@ using static Unity.Entities.SystemAPI;
 
 namespace To2.Framework.YooAsset
 {
-    public partial class YooSystem : SystemBase
+    public partial struct YooSystem : ISystem
     {
-        PackageSettings PackageSettings;
+        private static PackageSettings PackageSettings;
 
-        protected override void OnUpdate()
+        public void OnUpdate(ref SystemState state)
         {
-            ComponentLookup<YooComponent> yooLookup = SystemAPI.GetComponentLookup<YooComponent>();
+            //var watch = System.Diagnostics.Stopwatch.StartNew();
+            ComponentLookup<YooComponent> yooLookup = state.GetComponentLookup<YooComponent>();
             var entities = QueryBuilder().WithAll<YooComponent>().Build().ToEntityArray(Allocator.Temp);
             foreach (var entity in entities)
             {
@@ -27,9 +28,10 @@ namespace To2.Framework.YooAsset
                 }
                 yooLookup.SetComponentEnabled(entity, component.Status != EOperationStatus.Failed);
             }
+            //watch.Stop();
         }
 
-        protected PackageSetting GetPackageSetting(int ID)
+        public PackageSetting GetPackageSetting(int ID)
         {
             if (PackageSettings == null || PackageSettings.Packages == null || PackageSettings.Packages.Length == 0)
                 return null;

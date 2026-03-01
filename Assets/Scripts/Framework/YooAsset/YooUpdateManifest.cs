@@ -2,7 +2,7 @@
 
 namespace To2.Framework.YooAsset
 {
-    public partial class YooSystem
+    public partial struct YooSystem
     {
         private void UpdateManifest(ref YooComponent component) 
         {

@@ -9,8 +9,6 @@ namespace To2.Framework.YooAsset
         public int ID;
         public string Name;
         public string Host;
-        //[NonSerialized]
-        //public string Version;
         [NonSerialized]
         public AsyncOperationBase operation;
     }
