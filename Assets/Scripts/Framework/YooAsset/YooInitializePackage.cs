@@ -4,18 +4,25 @@ namespace To2.Framework.YooAsset
 {
     public partial class YooSystem
     {
-        private partial void InitPackage(YooComponent componet)
+        private void InitPackage(ref YooComponent component)
         {
-            if (componet.Status == EOperationStatus.None)
+            if (component.Status == EOperationStatus.None)
             {
-                var packageSetting = GetPackageSetting(componet.PackageID);
+                var packageSetting = GetPackageSetting(component.PackageID);
                 if (packageSetting == null)
+                {
+                    component.Status = EOperationStatus.Failed;
                     return;
+                }
                 //创建资源包裹类
                 var package = YooAssets.TryGetPackage(packageSetting.Name);
                 if (package == null)
                     package = YooAssets.CreatePackage(packageSetting.Name);
-
+                if (package.InitializeStatus == EOperationStatus.Succeed)
+                {
+                    component.Status = package.InitializeStatus;
+                    return;
+                }
                 // 编辑器下的模拟模式
                 InitializationOperation operation = null;
                 if (PackageSettings.PlayMode == EPlayMode.EditorSimulateMode)
@@ -46,21 +53,24 @@ namespace To2.Framework.YooAsset
                     createParameters.CacheFileSystemParameters = FileSystemParameters.CreateDefaultCacheFileSystemParameters(remoteServices);
                     operation = package.InitializeAsync(createParameters);
                 }
-                componet.Status = EOperationStatus.Processing;
-                // 如果初始化失败弹出提示界面
-                if (operation.Status != EOperationStatus.Succeed)
-                {
-                    componet.Status = operation.Status;
-                }
-                else
-                {
-                    componet.PackageStatus = YooStatus.RequestVersion;
-                    componet.Status = EOperationStatus.None;
-                }
+                packageSetting.operation = operation;
+                component.Status = operation.Status;
             }
-            else if (componet.Status == EOperationStatus.Processing)
-            { 
-                
+            else if (component.Status == EOperationStatus.Processing)
+            {
+                var packageSetting = GetPackageSetting(component.PackageID);
+                if (packageSetting.operation == null)
+                    component.Status = EOperationStatus.Failed;
+                else
+                    component.Status = packageSetting.operation.Status;
+            }
+            else if (component.Status == EOperationStatus.Failed)
+            {
+            }
+            else if (component.Status == EOperationStatus.Succeed)
+            {
+                component.PackageStatus = YooStatus.RequestVersion;
+                component.Status = EOperationStatus.None;
             }
         }
     }

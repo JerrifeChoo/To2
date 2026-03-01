@@ -1,4 +1,5 @@
-﻿using Unity.Entities;
+﻿using Unity.Collections;
+using Unity.Entities;
 using YooAsset;
 using static Unity.Entities.SystemAPI;
 
@@ -10,18 +11,21 @@ namespace To2.Framework.YooAsset
 
         protected override void OnUpdate()
         {
-            foreach (var component in Query<RefRW<YooComponent>>())
+            ComponentLookup<YooComponent> yooLookup = SystemAPI.GetComponentLookup<YooComponent>();
+            var entities = QueryBuilder().WithAll<YooComponent>().Build().ToEntityArray(Allocator.Temp);
+            foreach (var entity in entities)
             {
-                var valueRW = component.ValueRW;
-                switch (valueRW.PackageStatus)
+                var component = yooLookup[entity];
+                switch (component.PackageStatus)
                 {
-                    case YooStatus.None:                                            break;
-                    case YooStatus.InitializePackage:   InitPackage(valueRW);       break;
-                    case YooStatus.RequestVersion:      RequestVersion(valueRW);    break;
-                    case YooStatus.UpdateManifest:      UpdateManifest(valueRW);    break;
-                    case YooStatus.DownloadPackage:     DownloadPackage(valueRW);   break;
-                    case YooStatus.ClearCacheBundle:    ClearCacheBundle(valueRW);  break;
+                    case YooStatus.None:                                                    break;
+                    case YooStatus.InitializePackage:   InitPackage(ref component);         break;
+                    case YooStatus.RequestVersion:      RequestVersion(ref component);      break;
+                    case YooStatus.UpdateManifest:      UpdateManifest(ref component);      break;
+                    case YooStatus.DownloadPackage:     DownloadPackage(ref component);     break;
+                    case YooStatus.ClearCacheBundle:    ClearCacheBundle(ref component);    break;
                 }
+                yooLookup.SetComponentEnabled(entity, component.Status != EOperationStatus.Failed);
             }
         }
 
@@ -40,7 +44,7 @@ namespace To2.Framework.YooAsset
         private string GetHostServerURL(PackageSetting setting)
         {
             string hostServerIP = setting.Host != null ? setting.Host : PackageSettings.DefaultHost;
-            string appVersion = setting.Version;
+            string appVersion = PackageSettings.AppVersion;
 
 #if UNITY_EDITOR
             if (UnityEditor.EditorUserBuildSettings.activeBuildTarget == UnityEditor.BuildTarget.Android)
@@ -85,11 +89,5 @@ namespace To2.Framework.YooAsset
                 return $"{_fallbackHostServer}/{fileName}";
             }
         }
-
-        private partial void InitPackage(YooComponent componet);
-        private partial void RequestVersion(YooComponent componet);
-        private partial void UpdateManifest(YooComponent componet);
-        private partial void DownloadPackage(YooComponent componet);
-        private partial void ClearCacheBundle(YooComponent componet);
     }
 }

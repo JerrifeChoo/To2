@@ -5,16 +5,40 @@ namespace To2.Framework.YooAsset
 {
     public partial class YooSystem
 	{
-        private partial void ClearCacheBundle(YooComponent componet)
+        private void ClearCacheBundle(ref YooComponent component)
         {
-            var packageSetting = GetPackageSetting(componet.PackageID);
-            if (packageSetting == null)
-                return;
-            var package = YooAssets.GetPackage(packageSetting.Name);
-            if (package == null)
-                return;
-            var operation = package.ClearCacheFilesAsync(EFileClearMode.ClearUnusedBundleFiles);
-            //operation.Completed += Operation_Completed;
+            if (component.Status == EOperationStatus.None)
+            {
+                var packageSetting = GetPackageSetting(component.PackageID);
+                if (packageSetting == null)
+                {
+                    component.Status = EOperationStatus.Failed;
+                    return;
+                }
+                var package = YooAssets.GetPackage(packageSetting.Name);
+                if (package == null)
+                {
+                    component.Status = EOperationStatus.Failed;
+                    return;
+                }
+                var operation = package.ClearCacheFilesAsync(EFileClearMode.ClearUnusedBundleFiles);
+                packageSetting.operation = operation;
+                component.Status = operation.Status;
+            }
+            else if (component.Status == EOperationStatus.Succeed)
+            {
+                var packageSetting = GetPackageSetting(component.PackageID);
+                if (packageSetting.operation == null)
+                    component.Status = EOperationStatus.Failed;
+                else
+                    component.Status = packageSetting.operation.Status;
+            }
+            else if (component.Status == EOperationStatus.Failed)
+            {
+            }
+            else if (component.Status == EOperationStatus.Succeed)
+            {
+            }
         }
     }
 }

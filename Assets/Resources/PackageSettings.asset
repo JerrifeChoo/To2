@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: PackageSettings
   m_EditorClassIdentifier: 
   DefaultHost: 127.0.0.1
-  packages:
-  - ID: 0
-    Name: 
-    Version: 
-    Host: 
+  AppVersion: V1.0
+  PlayMode: 0
+  Packages: []

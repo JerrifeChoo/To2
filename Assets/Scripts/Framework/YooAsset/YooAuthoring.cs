@@ -15,7 +15,7 @@ namespace To2.Framework.YooAsset
         ClearCacheBundle,
     }
 
-    public struct YooComponent : IComponentData
+    public struct YooComponent : IComponentData, IEnableableComponent
     {
         public int PackageID;
         public YooStatus PackageStatus;
