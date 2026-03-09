@@ -66,9 +66,11 @@
     <Compile Include="Assets\Scripts\Framework\YooAsset\YooDownloadPackage.cs" />
     <Compile Include="Assets\Scripts\Framework\YooAsset\YooClearCacheBundle.cs" />
     <Compile Include="Assets\Scripts\Framework\YooAsset\YooRequestVersion.cs" />
+    <Compile Include="Assets\Scripts\Framework\YooAsset\AesStream.cs" />
     <Compile Include="Assets\Scripts\Framework\GameMgr.cs" />
     <Compile Include="Assets\Scripts\Framework\YooAsset\YooUpdateManifest.cs" />
     <Compile Include="Assets\Scripts\Framework\YooAsset\YooAuthoring.cs" />
+    <Compile Include="Assets\Scripts\Framework\YooAsset\TestFileStreamDecryption.cs" />
     <Compile Include="Assets\Scripts\Framework\YooAsset\YooSystem.cs" />
     <Compile Include="Assets\Scripts\Framework\YooAsset\PackageSettings.cs" />
   </ItemGroup>
