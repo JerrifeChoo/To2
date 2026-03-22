@@ -435,10 +435,6 @@
       <HintPath>Library\PackageCache\com.unity.collab-proxy@2.11.2\Lib\Editor\Unity.Plastic.Antlr3.Runtime.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="dnlib">
-      <HintPath>Library\PackageCache\com.code-philosophy.obfuz@7b06f0fed8\Plugins\dnlib.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Unity.Plastic.Newtonsoft.Json">
       <HintPath>Library\PackageCache\com.unity.collab-proxy@2.11.2\Lib\Editor\Unity.Plastic.Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
@@ -461,10 +457,6 @@
     </Reference>
     <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
       <HintPath>Library\PackageCache\com.unity.visualscripting@1.9.9\Runtime\VisualScripting.Flow\Dependencies\NCalc\Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="LZ4">
-      <HintPath>Library\PackageCache\com.code-philosophy.hybridclr@4feac30cb2\Plugins\LZ4.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.VisualScripting.TextureAssets">
@@ -999,10 +991,6 @@
       <HintPath>Library\ScriptAssemblies\UnityEngine.TestRunner.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="HybridCLR.Runtime">
-      <HintPath>Library\ScriptAssemblies\HybridCLR.Runtime.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Unity.RenderPipelines.Core.Runtime">
       <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Core.Runtime.dll</HintPath>
       <Private>False</Private>
@@ -1013,18 +1001,6 @@
     </Reference>
     <Reference Include="Unity.Physics.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Physics.Editor.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="YooAsset">
-      <HintPath>Library\ScriptAssemblies\YooAsset.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Obfuz.Runtime">
-      <HintPath>Library\ScriptAssemblies\Obfuz.Runtime.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="HybridCLR.Editor">
-      <HintPath>Library\ScriptAssemblies\HybridCLR.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.ScriptableBuildPipeline">
@@ -1065,10 +1041,6 @@
     </Reference>
     <Reference Include="Unity.Mathematics.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Mathematics.Editor.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Obfuz4HybridCLR.Editor">
-      <HintPath>Library\ScriptAssemblies\Obfuz4HybridCLR.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Numerics.Linear.Solvers.Lowlevel">
@@ -1149,10 +1121,6 @@
     </Reference>
     <Reference Include="Unity.Burst">
       <HintPath>Library\ScriptAssemblies\Unity.Burst.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Obfuz.Editor">
-      <HintPath>Library\ScriptAssemblies\Obfuz.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Timeline.Editor">
@@ -1265,10 +1233,6 @@
     </Reference>
     <Reference Include="Unity.Searcher.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Searcher.Editor.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="YooAsset.Editor">
-      <HintPath>Library\ScriptAssemblies\YooAsset.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Mathematics.Extensions">
