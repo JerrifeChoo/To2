@@ -2098,7 +2098,12 @@ namespace TMPro
                     if (m_currentMaterial != null && m_currentMaterial.HasProperty(ShaderUtilities.ID_GradientScale))
                     {
                         float gradientScale = m_currentMaterial.GetFloat(ShaderUtilities.ID_GradientScale);
-                        style_padding = m_currentFontAsset.boldStyle / 4.0f * gradientScale * m_currentMaterial.GetFloat(ShaderUtilities.ID_ScaleRatio_A);
+                        float ratioA;
+                        if (m_currentMaterial.shader.name.Contains("Vertex"))
+                            ratioA = this.ratioA;
+                        else
+                            ratioA = m_currentMaterial.GetFloat(ShaderUtilities.ID_ScaleRatio_A);
+                        style_padding = m_currentFontAsset.boldStyle / 4.0f * gradientScale * ratioA;
 
                         // Clamp overall padding to Gradient Scale size.
                         if (style_padding + padding > gradientScale)
@@ -2111,10 +2116,15 @@ namespace TMPro
                 }
                 else
                 {
-                    if (m_currentMaterial != null && m_currentMaterial.HasProperty(ShaderUtilities.ID_GradientScale) && m_currentMaterial.HasProperty(ShaderUtilities.ID_ScaleRatio_A))
+                    if (m_currentMaterial != null && m_currentMaterial.HasProperty(ShaderUtilities.ID_GradientScale) && (m_currentMaterial.shader.name.Contains("Vertex") || m_currentMaterial.HasProperty(ShaderUtilities.ID_ScaleRatio_A)))
                     {
                         float gradientScale = m_currentMaterial.GetFloat(ShaderUtilities.ID_GradientScale);
-                        style_padding = m_currentFontAsset.normalStyle / 4.0f * gradientScale * m_currentMaterial.GetFloat(ShaderUtilities.ID_ScaleRatio_A);
+                        float ratioA;
+                        if (m_currentMaterial.shader.name.Contains("Vertex"))
+                            ratioA = this.ratioA;
+                        else
+                            ratioA = m_currentMaterial.GetFloat(ShaderUtilities.ID_ScaleRatio_A);
+                        style_padding = m_currentFontAsset.normalStyle / 4.0f * gradientScale * ratioA;
 
                         // Clamp overall padding to Gradient Scale size.
                         if (style_padding + padding > gradientScale)
