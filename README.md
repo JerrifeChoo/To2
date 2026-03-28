@@ -22,4 +22,5 @@
   <img width="846" height="1026" alt="T5 R$SWZWTU4GCKX`G~KMBM" src="https://github.com/user-attachments/assets/b9ea3e93-cdb3-4711-b03b-f84b1fc022d7" />  
 
 **具体效果**：  
-<img width="1702" height="1186" alt="d1d62ddcba10743d0f735c63bc4237c4" src="https://github.com/user-attachments/assets/2fdd5a61-a956-4d91-8bea-9353a903797b" />
+<img width="1038" height="1130" alt="image" src="https://github.com/user-attachments/assets/5dccb0f1-40a1-425c-8178-4f558edfe6a3" />
+
