@@ -5829,10 +5829,10 @@ namespace TMPro
 
 
             // Setup UVS3
-            m_textInfo.meshInfo[materialIndex].tangents[0 + index_X4] = characterInfoArray[i].vertex_BL.tangent;
-            m_textInfo.meshInfo[materialIndex].tangents[1 + index_X4] = characterInfoArray[i].vertex_TL.tangent;
-            m_textInfo.meshInfo[materialIndex].tangents[2 + index_X4] = characterInfoArray[i].vertex_TR.tangent;
-            m_textInfo.meshInfo[materialIndex].tangents[3 + index_X4] = characterInfoArray[i].vertex_BR.tangent;
+            m_textInfo.meshInfo[materialIndex].uvShaderData[0 + index_X4] = characterInfoArray[i].vertex_BL.tangent;
+            m_textInfo.meshInfo[materialIndex].uvShaderData[1 + index_X4] = characterInfoArray[i].vertex_TL.tangent;
+            m_textInfo.meshInfo[materialIndex].uvShaderData[2 + index_X4] = characterInfoArray[i].vertex_TR.tangent;
+            m_textInfo.meshInfo[materialIndex].uvShaderData[3 + index_X4] = characterInfoArray[i].vertex_BR.tangent;
 
             // setup Vertex Colors
             m_textInfo.meshInfo[materialIndex].colors32[0 + index_X4] = characterInfoArray[i].vertex_BL.color;
@@ -5902,10 +5902,10 @@ namespace TMPro
 
 
             // Setup tangents
-            m_textInfo.meshInfo[materialIndex].tangents[0 + index_X4] = characterInfoArray[i].vertex_BL.tangent;
-            m_textInfo.meshInfo[materialIndex].tangents[1 + index_X4] = characterInfoArray[i].vertex_TL.tangent;
-            m_textInfo.meshInfo[materialIndex].tangents[2 + index_X4] = characterInfoArray[i].vertex_TR.tangent;
-            m_textInfo.meshInfo[materialIndex].tangents[3 + index_X4] = characterInfoArray[i].vertex_BR.tangent;
+            m_textInfo.meshInfo[materialIndex].uvShaderData[0 + index_X4] = characterInfoArray[i].vertex_BL.tangent;
+            m_textInfo.meshInfo[materialIndex].uvShaderData[1 + index_X4] = characterInfoArray[i].vertex_TL.tangent;
+            m_textInfo.meshInfo[materialIndex].uvShaderData[2 + index_X4] = characterInfoArray[i].vertex_TR.tangent;
+            m_textInfo.meshInfo[materialIndex].uvShaderData[3 + index_X4] = characterInfoArray[i].vertex_BR.tangent;
 
 
             // setup Vertex Colors

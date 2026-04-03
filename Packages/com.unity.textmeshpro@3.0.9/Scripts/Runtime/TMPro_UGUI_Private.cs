@@ -1014,6 +1014,7 @@ namespace TMPro
         {
             m_textInfo.meshInfo[0].ResizeMeshInfo(size);
 
+            m_textInfo.meshInfo[0].UploadUvShaderDataToMesh(m_textInfo.meshInfo[0].mesh);
             m_canvasRenderer.SetMesh(m_textInfo.meshInfo[0].mesh);
         }
 
@@ -4435,6 +4436,8 @@ namespace TMPro
                 // This could be optimized based on canvas render mode settings but gets complicated to handle with multiple text objects using different material presets.
                 if (m_canvas.additionalShaderChannels != (AdditionalCanvasShaderChannels)25)
                     m_canvas.additionalShaderChannels |= (AdditionalCanvasShaderChannels)25;
+                // Third UV stream (Mesh.SetUVs(2)) carries TMP vertex-outline payload; not mangled like Mesh.tangents under UI scale/rotate.
+                m_canvas.additionalShaderChannels |= AdditionalCanvasShaderChannels.TexCoord2;
 
                 // Sort the geometry of the text object if needed.
                 if (m_geometrySortingOrder != VertexSortingOrder.Normal)
@@ -4446,6 +4449,7 @@ namespace TMPro
                 m_mesh.uv = m_textInfo.meshInfo[0].uvs0;
                 m_mesh.uv2 = m_textInfo.meshInfo[0].uvs2;
                 m_mesh.tangents = m_textInfo.meshInfo[0].tangents;
+                m_textInfo.meshInfo[0].UploadUvShaderDataToMesh(m_mesh);
                 //m_mesh.uv4 = m_textInfo.meshInfo[0].uvs4;
                 m_mesh.colors32 = m_textInfo.meshInfo[0].colors32;
 
@@ -4476,6 +4480,7 @@ namespace TMPro
                     m_subTextObjects[i].mesh.uv = m_textInfo.meshInfo[i].uvs0;
                     m_subTextObjects[i].mesh.uv2 = m_textInfo.meshInfo[i].uvs2;
                     m_subTextObjects[i].mesh.tangents = m_textInfo.meshInfo[i].tangents;
+                    m_textInfo.meshInfo[i].UploadUvShaderDataToMesh(m_subTextObjects[i].mesh);
                     //m_subTextObjects[i].mesh.uv4 = m_textInfo.meshInfo[i].uvs4;
                     m_subTextObjects[i].mesh.colors32 = m_textInfo.meshInfo[i].colors32;
 
@@ -4676,11 +4681,13 @@ namespace TMPro
                 if (i == 0)
                 {
                     m_mesh.uv2 = m_textInfo.meshInfo[0].uvs2;
+                    m_textInfo.meshInfo[0].UploadUvShaderDataToMesh(m_mesh);
                     m_canvasRenderer.SetMesh(m_mesh);
                 }
                 else
                 {
                     m_subTextObjects[i].mesh.uv2 = m_textInfo.meshInfo[i].uvs2;
+                    m_textInfo.meshInfo[i].UploadUvShaderDataToMesh(m_subTextObjects[i].mesh);
                     m_subTextObjects[i].canvasRenderer.SetMesh(m_subTextObjects[i].mesh);
                 }
             }

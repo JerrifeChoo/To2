@@ -27,6 +27,12 @@ namespace TMPro
         public Vector3[] normals;
         public Vector4[] tangents;
 
+        /// <summary>
+        /// Per-vertex data for TMP SDF "Vertex Color" shaders (outline / ratio / underlay packing).
+        /// Mirrored from <see cref="tangents"/> and uploaded with <see cref="Mesh.SetUVs"/> channel 2 so UGUI scale/rotate will not corrupt it like <see cref="Mesh.tangents"/>.
+        /// </summary>
+        public Vector4[] uvShaderData;
+
         public Vector2[] uvs0;
         public Vector2[] uvs2;
         //public Vector2[] uvs4;
@@ -70,6 +76,7 @@ namespace TMPro
 
             this.normals = new Vector3[sizeX4];
             this.tangents = new Vector4[sizeX4];
+            this.uvShaderData = new Vector4[sizeX4];
 
             this.triangles = new int[sizeX6];
 
@@ -86,6 +93,7 @@ namespace TMPro
                     this.colors32[index_X4 + i] = s_DefaultColor;
                     this.normals[index_X4 + i] = s_DefaultNormal;
                     this.tangents[index_X4 + i] = s_DefaultTangent;
+                    this.uvShaderData[index_X4 + i] = s_DefaultTangent;
                 }
 
                 this.triangles[index_X6 + 0] = index_X4 + 0;
@@ -147,6 +155,7 @@ namespace TMPro
 
             this.normals = new Vector3[size_x_s0];
             this.tangents = new Vector4[size_x_s0];
+            this.uvShaderData = new Vector4[size_x_s0];
 
             this.triangles = new int[size_x_s1];
 
@@ -163,6 +172,7 @@ namespace TMPro
                     this.colors32[index_x_s0 + i] = s_DefaultColor;
                     this.normals[index_x_s0 + i] = s_DefaultNormal;
                     this.tangents[index_x_s0 + i] = s_DefaultTangent;
+                    this.uvShaderData[index_x_s0 + i] = s_DefaultTangent;
                 }
 
                 // Front Face
@@ -250,6 +260,7 @@ namespace TMPro
             Array.Resize(ref this.vertices, size_X4);
             Array.Resize(ref this.normals, size_X4);
             Array.Resize(ref this.tangents, size_X4);
+            Array.Resize(ref this.uvShaderData, size_X4);
 
             Array.Resize(ref this.uvs0, size_X4);
             Array.Resize(ref this.uvs2, size_X4);
@@ -285,6 +296,11 @@ namespace TMPro
                 this.tangents[1 + index_X4] = s_DefaultTangent;
                 this.tangents[2 + index_X4] = s_DefaultTangent;
                 this.tangents[3 + index_X4] = s_DefaultTangent;
+
+                this.uvShaderData[0 + index_X4] = s_DefaultTangent;
+                this.uvShaderData[1 + index_X4] = s_DefaultTangent;
+                this.uvShaderData[2 + index_X4] = s_DefaultTangent;
+                this.uvShaderData[3 + index_X4] = s_DefaultTangent;
 
                 // Setup Triangles
                 this.triangles[0 + index_X6] = 0 + index_X4;
@@ -323,6 +339,7 @@ namespace TMPro
             Array.Resize(ref this.vertices, size_X4);
             Array.Resize(ref this.normals, size_X4);
             Array.Resize(ref this.tangents, size_X4);
+            Array.Resize(ref this.uvShaderData, size_X4);
 
             Array.Resize(ref this.uvs0, size_X4);
             Array.Resize(ref this.uvs2, size_X4);
@@ -359,6 +376,11 @@ namespace TMPro
                 this.tangents[2 + index_X4] = s_DefaultTangent;
                 this.tangents[3 + index_X4] = s_DefaultTangent;
 
+                this.uvShaderData[0 + index_X4] = s_DefaultTangent;
+                this.uvShaderData[1 + index_X4] = s_DefaultTangent;
+                this.uvShaderData[2 + index_X4] = s_DefaultTangent;
+                this.uvShaderData[3 + index_X4] = s_DefaultTangent;
+
                 if (isVolumetric)
                 {
                     this.normals[4 + index_X4] = s_DefaultNormal;
@@ -370,6 +392,11 @@ namespace TMPro
                     this.tangents[5 + index_X4] = s_DefaultTangent;
                     this.tangents[6 + index_X4] = s_DefaultTangent;
                     this.tangents[7 + index_X4] = s_DefaultTangent;
+
+                    this.uvShaderData[4 + index_X4] = s_DefaultTangent;
+                    this.uvShaderData[5 + index_X4] = s_DefaultTangent;
+                    this.uvShaderData[6 + index_X4] = s_DefaultTangent;
+                    this.uvShaderData[7 + index_X4] = s_DefaultTangent;
                 }
 
                 // Setup Triangles
@@ -643,6 +670,34 @@ namespace TMPro
             color = colors32[dst_Index + 3];
             colors32[dst_Index + 3] = colors32[src_Index + 3];
             colors32[src_Index + 3] = color;
+
+            // Swap custom TMP SDF payload (mirrors tangents for vertex-outline shaders)
+            Vector4 uvSd;
+            uvSd = uvShaderData[dst_Index + 0];
+            uvShaderData[dst_Index + 0] = uvShaderData[src_Index + 0];
+            uvShaderData[src_Index + 0] = uvSd;
+
+            uvSd = uvShaderData[dst_Index + 1];
+            uvShaderData[dst_Index + 1] = uvShaderData[src_Index + 1];
+            uvShaderData[src_Index + 1] = uvSd;
+
+            uvSd = uvShaderData[dst_Index + 2];
+            uvShaderData[dst_Index + 2] = uvShaderData[src_Index + 2];
+            uvShaderData[src_Index + 2] = uvSd;
+
+            uvSd = uvShaderData[dst_Index + 3];
+            uvShaderData[dst_Index + 3] = uvShaderData[src_Index + 3];
+            uvShaderData[src_Index + 3] = uvSd;
+        }
+
+
+        /// <summary>
+        /// Upload <see cref="uvShaderData"/> to the mesh's UV stream index 2 (vertex TEXCOORD2 input; use instead of tangents for UI).
+        /// </summary>
+        public void UploadUvShaderDataToMesh(Mesh targetMesh)
+        {
+            if (targetMesh == null || uvShaderData == null) return;
+            targetMesh.SetUVs(2, uvShaderData);
         }
 
 
