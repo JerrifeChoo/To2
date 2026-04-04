@@ -429,8 +429,7 @@ namespace TMPro
 
                 if ((flags & TMP_VertexDataUpdateFlags.Colors32) == TMP_VertexDataUpdateFlags.Colors32)
                     mesh.colors32 = m_textInfo.meshInfo[i].colors32;
-
-                m_textInfo.meshInfo[i].UploadUvShaderDataToMesh(mesh);
+                mesh.SetUVs(2, m_textInfo.meshInfo[i].uvs2_v4);
 
                 mesh.RecalculateBounds();
             }
@@ -465,7 +464,7 @@ namespace TMPro
                 mesh.uv2 = m_textInfo.meshInfo[i].uvs2;
                 //mesh.uv4 = m_textInfo.meshInfo[i].uvs4;
                 mesh.colors32 = m_textInfo.meshInfo[i].colors32;
-                m_textInfo.meshInfo[i].UploadUvShaderDataToMesh(mesh);
+                mesh.SetUVs(2, m_textInfo.meshInfo[i].uvs2_v4);
 
                 mesh.RecalculateBounds();
             }

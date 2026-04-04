@@ -9,9 +9,10 @@ namespace TMPro
         public Vector3 position;
         public Vector2 uv;
         public Vector2 uv2;
+        public Vector4 uv2_v4;
         public Vector2 uv4;
         public Color32 color;
-        public Vector4 tangent;
+        //public Vector4 tangent;
 
         public static TMP_Vertex zero { get { return k_Zero; } }
 
