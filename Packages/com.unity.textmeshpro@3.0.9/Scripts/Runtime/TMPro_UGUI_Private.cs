@@ -4432,13 +4432,6 @@ namespace TMPro
                 // Event to allow users to modify the content of the text info before the text is rendered.
                 OnPreRenderText?.Invoke(m_textInfo);
 
-                // Must ensure the Canvas support the additional vertex attributes used by TMP.
-                // This could be optimized based on canvas render mode settings but gets complicated to handle with multiple text objects using different material presets.
-                if (m_canvas.additionalShaderChannels != (AdditionalCanvasShaderChannels)3)
-                    m_canvas.additionalShaderChannels |= (AdditionalCanvasShaderChannels)3;
-                // Third UV stream (Mesh.SetUVs(2)) carries TMP vertex-outline payload; not mangled like Mesh.tangents under UI scale/rotate.
-                // m_canvas.additionalShaderChannels |= AdditionalCanvasShaderChannels.TexCoord2;
-
                 // Sort the geometry of the text object if needed.
                 if (m_geometrySortingOrder != VertexSortingOrder.Normal)
                     m_textInfo.meshInfo[0].SortGeometry(VertexSortingOrder.Reverse);
@@ -4448,7 +4441,6 @@ namespace TMPro
                 m_mesh.vertices = m_textInfo.meshInfo[0].vertices;
                 m_mesh.uv = m_textInfo.meshInfo[0].uvs0;
                 m_mesh.uv2 = m_textInfo.meshInfo[0].uvs2;
-                m_mesh.tangents = m_textInfo.meshInfo[0].tangents;
                 m_mesh.SetUVs(2, m_textInfo.meshInfo[0].uvs3);
                 //m_mesh.uv4 = m_textInfo.meshInfo[0].uvs4;
                 m_mesh.colors32 = m_textInfo.meshInfo[0].colors32;
@@ -4479,7 +4471,6 @@ namespace TMPro
                     m_subTextObjects[i].mesh.vertices = m_textInfo.meshInfo[i].vertices;
                     m_subTextObjects[i].mesh.uv = m_textInfo.meshInfo[i].uvs0;
                     m_subTextObjects[i].mesh.uv2 = m_textInfo.meshInfo[i].uvs2;
-                    m_subTextObjects[i].mesh.tangents = m_textInfo.meshInfo[i].tangents;
                     m_subTextObjects[i].mesh.SetUVs(2, m_textInfo.meshInfo[i].uvs3);
                     //m_subTextObjects[i].mesh.uv4 = m_textInfo.meshInfo[i].uvs4;
                     m_subTextObjects[i].mesh.colors32 = m_textInfo.meshInfo[i].colors32;

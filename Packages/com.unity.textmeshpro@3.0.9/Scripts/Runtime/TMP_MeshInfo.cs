@@ -22,12 +22,7 @@ namespace TMPro
 
         public Vector3[] vertices;
         public Vector3[] normals;
-        public Vector4[] tangents;
-
-        /// <summary>
-        /// Per-vertex data for TMP SDF "Vertex Color" shaders (outline / ratio / underlay packing).
-        /// Mirrored from <see cref="tangents"/> and uploaded with <see cref="Mesh.SetUVs"/> channel 2 so UGUI scale/rotate will not corrupt it like <see cref="Mesh.tangents"/>.
-        /// </summary>
+        //public Vector4[] tangents;
 
         public Vector2[] uvs0;
         public Vector2[] uvs2;
@@ -73,7 +68,6 @@ namespace TMPro
             this.colors32 = new Color32[sizeX4];
 
             this.normals = new Vector3[sizeX4];
-            this.tangents = new Vector4[sizeX4];
 
             this.triangles = new int[sizeX6];
 
@@ -90,7 +84,6 @@ namespace TMPro
                     //this.uvs4[index_X4 + i] = Vector2.zero;
                     this.colors32[index_X4 + i] = s_DefaultColor;
                     this.normals[index_X4 + i] = s_DefaultNormal;
-                    this.tangents[index_X4 + i] = s_DefaultTangent;
                 }
 
                 this.triangles[index_X6 + 0] = index_X4 + 0;
@@ -107,7 +100,6 @@ namespace TMPro
             // Pre-assign base vertex attributes.
             this.mesh.vertices = this.vertices;
             this.mesh.normals = this.normals;
-            this.mesh.tangents = this.tangents;
             this.mesh.triangles = this.triangles;
             this.mesh.bounds = s_DefaultBounds;
             this.material = null;
@@ -151,7 +143,6 @@ namespace TMPro
             this.colors32 = new Color32[size_x_s0];
 
             this.normals = new Vector3[size_x_s0];
-            this.tangents = new Vector4[size_x_s0];
             this.uvs3 = new Vector4[size_x_s0];
 
             this.triangles = new int[size_x_s1];
@@ -169,7 +160,6 @@ namespace TMPro
                     //this.uvs4[index_X4 + i] = Vector2.zero;
                     this.colors32[index_x_s0 + i] = s_DefaultColor;
                     this.normals[index_x_s0 + i] = s_DefaultNormal;
-                    this.tangents[index_x_s0 + i] = s_DefaultTangent;
                 }
 
                 // Front Face
@@ -230,7 +220,6 @@ namespace TMPro
             // Pre-assign base vertex attributes.
             this.mesh.vertices = this.vertices;
             this.mesh.normals = this.normals;
-            this.mesh.tangents = this.tangents;
             this.mesh.triangles = this.triangles;
             this.mesh.bounds = s_DefaultBounds;
             this.material = null;
@@ -256,7 +245,6 @@ namespace TMPro
 
             Array.Resize(ref this.vertices, size_X4);
             Array.Resize(ref this.normals, size_X4);
-            Array.Resize(ref this.tangents, size_X4);
 
             Array.Resize(ref this.uvs0, size_X4);
             Array.Resize(ref this.uvs2, size_X4);
@@ -274,8 +262,6 @@ namespace TMPro
                 this.mesh.triangles = this.triangles;
                 this.mesh.vertices = this.vertices;
                 this.mesh.normals = this.normals;
-                this.mesh.tangents = this.tangents;
-
                 return;
             }
 
@@ -289,11 +275,6 @@ namespace TMPro
                 this.normals[2 + index_X4] = s_DefaultNormal;
                 this.normals[3 + index_X4] = s_DefaultNormal;
 
-                this.tangents[0 + index_X4] = s_DefaultTangent;
-                this.tangents[1 + index_X4] = s_DefaultTangent;
-                this.tangents[2 + index_X4] = s_DefaultTangent;
-                this.tangents[3 + index_X4] = s_DefaultTangent;
-
                 // Setup Triangles
                 this.triangles[0 + index_X6] = 0 + index_X4;
                 this.triangles[1 + index_X6] = 1 + index_X4;
@@ -305,7 +286,6 @@ namespace TMPro
 
             this.mesh.vertices = this.vertices;
             this.mesh.normals = this.normals;
-            this.mesh.tangents = this.tangents;
             this.mesh.triangles = this.triangles;
         }
 
@@ -330,7 +310,6 @@ namespace TMPro
 
             Array.Resize(ref this.vertices, size_X4);
             Array.Resize(ref this.normals, size_X4);
-            Array.Resize(ref this.tangents, size_X4);
 
             Array.Resize(ref this.uvs0, size_X4);
             Array.Resize(ref this.uvs2, size_X4);
@@ -348,8 +327,6 @@ namespace TMPro
                 this.mesh.triangles = this.triangles;
                 this.mesh.vertices = this.vertices;
                 this.mesh.normals = this.normals;
-                this.mesh.tangents = this.tangents;
-
                 return;
             }
 
@@ -362,33 +339,12 @@ namespace TMPro
                 this.normals[1 + index_X4] = s_DefaultNormal;
                 this.normals[2 + index_X4] = s_DefaultNormal;
                 this.normals[3 + index_X4] = s_DefaultNormal;
-
-                this.tangents[0 + index_X4] = s_DefaultTangent;
-                this.tangents[1 + index_X4] = s_DefaultTangent;
-                this.tangents[2 + index_X4] = s_DefaultTangent;
-                this.tangents[3 + index_X4] = s_DefaultTangent;
-
-                //this.uv2_v4[0 + index_X4] = s_DefaultTangent;
-                //this.uv2_v4[1 + index_X4] = s_DefaultTangent;
-                //this.uv2_v4[2 + index_X4] = s_DefaultTangent;
-                //this.uv2_v4[3 + index_X4] = s_DefaultTangent;
-
                 if (isVolumetric)
                 {
                     this.normals[4 + index_X4] = s_DefaultNormal;
                     this.normals[5 + index_X4] = s_DefaultNormal;
                     this.normals[6 + index_X4] = s_DefaultNormal;
                     this.normals[7 + index_X4] = s_DefaultNormal;
-
-                    this.tangents[4 + index_X4] = s_DefaultTangent;
-                    this.tangents[5 + index_X4] = s_DefaultTangent;
-                    this.tangents[6 + index_X4] = s_DefaultTangent;
-                    this.tangents[7 + index_X4] = s_DefaultTangent;
-
-                    //this.uv2_v4[4 + index_X4] = s_DefaultTangent;
-                    //this.uv2_v4[5 + index_X4] = s_DefaultTangent;
-                    //this.uv2_v4[6 + index_X4] = s_DefaultTangent;
-                    //this.uv2_v4[7 + index_X4] = s_DefaultTangent;
                 }
 
                 // Setup Triangles
@@ -445,7 +401,6 @@ namespace TMPro
 
             this.mesh.vertices = this.vertices;
             this.mesh.normals = this.normals;
-            this.mesh.tangents = this.tangents;
             this.mesh.triangles = this.triangles;
         }
 
