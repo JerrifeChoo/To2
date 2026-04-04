@@ -161,7 +161,11 @@ SubShader {
 
 			float scale = rsqrt(dot(pixelSize, pixelSize));
 			scale *= abs(input.texcoord1.y) * _GradientScale * (_Sharpness + 1);
-			if(UNITY_MATRIX_P[3][3] == 0) scale = lerp(abs(scale) * (1 - _PerspectiveFilter), scale, abs(dot(UnityObjectToWorldNormal(input.normal.xyz), normalize(WorldSpaceViewDir(vert)))));
+			// if(UNITY_MATRIX_P[3][3] == 0) scale = lerp(abs(scale) * (1 - _PerspectiveFilter), scale, abs(dot(UnityObjectToWorldNormal(input.normal.xyz), normalize(WorldSpaceViewDir(vert)))));
+			// float perspFactor = 1 - UNITY_MATRIX_P[3][3];
+			// float viewFactor = abs(dot(UnityObjectToWorldNormal(input.normal.xyz), normalize(WorldSpaceViewDir(vert))));
+			// float filteredScale = lerp(abs(scale) * (1 - _PerspectiveFilter), scale, viewFactor);
+			// scale = lerp(scale, filteredScale, perspFactor);
 
 			fixed4 outlineColor = FloatToColor(input.texcoord2.x);
 			float4 ratios = FloatToRatio(input.texcoord2.y);
