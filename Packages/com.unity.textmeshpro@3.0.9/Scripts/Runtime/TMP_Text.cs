@@ -5632,18 +5632,18 @@ namespace TMPro
             {
                 float encodeColor = TMP_TextUtilities.EncodeColorToFloat(m_outlineColorVertex);
                 byts[0] = (byte)(m_outlineWidthVertex * 255);
-                m_textInfo.characterInfo[m_characterCount].vertex_BL.uv2_v4[0] = encodeColor;
-                m_textInfo.characterInfo[m_characterCount].vertex_TL.uv2_v4[0] = encodeColor;
-                m_textInfo.characterInfo[m_characterCount].vertex_TR.uv2_v4[0] = encodeColor;
-                m_textInfo.characterInfo[m_characterCount].vertex_BR.uv2_v4[0] = encodeColor;
+                m_textInfo.characterInfo[m_characterCount].vertex_BL.uv3[0] = encodeColor;
+                m_textInfo.characterInfo[m_characterCount].vertex_TL.uv3[0] = encodeColor;
+                m_textInfo.characterInfo[m_characterCount].vertex_TR.uv3[0] = encodeColor;
+                m_textInfo.characterInfo[m_characterCount].vertex_BR.uv3[0] = encodeColor;
             }
             else
             {
                 byts[0] = 0;
-                m_textInfo.characterInfo[m_characterCount].vertex_BL.uv2_v4[0] = 0.0f;
-                m_textInfo.characterInfo[m_characterCount].vertex_TL.uv2_v4[0] = 0.0f;
-                m_textInfo.characterInfo[m_characterCount].vertex_TR.uv2_v4[0] = 0.0f;
-                m_textInfo.characterInfo[m_characterCount].vertex_BR.uv2_v4[0] = 0.0f;
+                m_textInfo.characterInfo[m_characterCount].vertex_BL.uv3[0] = 0.0f;
+                m_textInfo.characterInfo[m_characterCount].vertex_TL.uv3[0] = 0.0f;
+                m_textInfo.characterInfo[m_characterCount].vertex_TR.uv3[0] = 0.0f;
+                m_textInfo.characterInfo[m_characterCount].vertex_BR.uv3[0] = 0.0f;
             }
             #endregion
 
@@ -5652,10 +5652,10 @@ namespace TMPro
             byts[2] = (byte)((255 + this.ratioB * 255) / 2);
             byts[3] = (byte)((255 + this.ratioC * 255) / 2);
             float encodeRatio = BitConverter.ToSingle(byts);
-            m_textInfo.characterInfo[m_characterCount].vertex_BL.uv2_v4[1] = encodeRatio;
-            m_textInfo.characterInfo[m_characterCount].vertex_TL.uv2_v4[1] = encodeRatio;
-            m_textInfo.characterInfo[m_characterCount].vertex_TR.uv2_v4[1] = encodeRatio;
-            m_textInfo.characterInfo[m_characterCount].vertex_BR.uv2_v4[1] = encodeRatio;
+            m_textInfo.characterInfo[m_characterCount].vertex_BL.uv3[1] = encodeRatio;
+            m_textInfo.characterInfo[m_characterCount].vertex_TL.uv3[1] = encodeRatio;
+            m_textInfo.characterInfo[m_characterCount].vertex_TR.uv3[1] = encodeRatio;
+            m_textInfo.characterInfo[m_characterCount].vertex_BR.uv3[1] = encodeRatio;
 
             #endregion
 
@@ -5664,32 +5664,32 @@ namespace TMPro
             if (m_enableVertexUnderlay)
             {
                 float encodeColor = TMP_TextUtilities.EncodeColorToFloat(m_underlayColor);
-                m_textInfo.characterInfo[m_characterCount].vertex_BL.uv2_v4[2] = encodeColor;
-                m_textInfo.characterInfo[m_characterCount].vertex_BL.uv2_v4[3] = m_underlayParams;
+                m_textInfo.characterInfo[m_characterCount].vertex_BL.uv3[2] = encodeColor;
+                m_textInfo.characterInfo[m_characterCount].vertex_BL.uv3[3] = m_underlayParams;
 
-                m_textInfo.characterInfo[m_characterCount].vertex_TL.uv2_v4[2] = encodeColor;
-                m_textInfo.characterInfo[m_characterCount].vertex_TL.uv2_v4[3] = m_underlayParams;
+                m_textInfo.characterInfo[m_characterCount].vertex_TL.uv3[2] = encodeColor;
+                m_textInfo.characterInfo[m_characterCount].vertex_TL.uv3[3] = m_underlayParams;
 
-                m_textInfo.characterInfo[m_characterCount].vertex_TR.uv2_v4[2] = encodeColor;
-                m_textInfo.characterInfo[m_characterCount].vertex_TR.uv2_v4[3] = m_underlayParams;
+                m_textInfo.characterInfo[m_characterCount].vertex_TR.uv3[2] = encodeColor;
+                m_textInfo.characterInfo[m_characterCount].vertex_TR.uv3[3] = m_underlayParams;
 
-                m_textInfo.characterInfo[m_characterCount].vertex_BR.uv2_v4[2] = encodeColor;
-                m_textInfo.characterInfo[m_characterCount].vertex_BR.uv2_v4[3] = m_underlayParams;
+                m_textInfo.characterInfo[m_characterCount].vertex_BR.uv3[2] = encodeColor;
+                m_textInfo.characterInfo[m_characterCount].vertex_BR.uv3[3] = m_underlayParams;
 
             }
             else
             {
-                m_textInfo.characterInfo[m_characterCount].vertex_BL.uv2_v4[2] = 0.0f;
-                m_textInfo.characterInfo[m_characterCount].vertex_BL.uv2_v4[3] = 0.0f;
+                m_textInfo.characterInfo[m_characterCount].vertex_BL.uv3[2] = 0.0f;
+                m_textInfo.characterInfo[m_characterCount].vertex_BL.uv3[3] = 0.0f;
 
-                m_textInfo.characterInfo[m_characterCount].vertex_TL.uv2_v4[2] = 0.0f;
-                m_textInfo.characterInfo[m_characterCount].vertex_TL.uv2_v4[3] = 0.0f;
+                m_textInfo.characterInfo[m_characterCount].vertex_TL.uv3[2] = 0.0f;
+                m_textInfo.characterInfo[m_characterCount].vertex_TL.uv3[3] = 0.0f;
 
-                m_textInfo.characterInfo[m_characterCount].vertex_TR.uv2_v4[2] = 0.0f;
-                m_textInfo.characterInfo[m_characterCount].vertex_TR.uv2_v4[3] = 0.0f;
+                m_textInfo.characterInfo[m_characterCount].vertex_TR.uv3[2] = 0.0f;
+                m_textInfo.characterInfo[m_characterCount].vertex_TR.uv3[3] = 0.0f;
 
-                m_textInfo.characterInfo[m_characterCount].vertex_BR.uv2_v4[2] = 0.0f;
-                m_textInfo.characterInfo[m_characterCount].vertex_BR.uv2_v4[3] = 0.0f;
+                m_textInfo.characterInfo[m_characterCount].vertex_BR.uv3[2] = 0.0f;
+                m_textInfo.characterInfo[m_characterCount].vertex_BR.uv3[3] = 0.0f;
             }
             #endregion
         }
@@ -5826,11 +5826,11 @@ namespace TMPro
             m_textInfo.meshInfo[materialIndex].uvs2[1 + index_X4] = characterInfoArray[i].vertex_TL.uv2;
             m_textInfo.meshInfo[materialIndex].uvs2[2 + index_X4] = characterInfoArray[i].vertex_TR.uv2;
             m_textInfo.meshInfo[materialIndex].uvs2[3 + index_X4] = characterInfoArray[i].vertex_BR.uv2;
-            // Setup UVS2
-            m_textInfo.meshInfo[materialIndex].uvs2_v4[0 + index_X4] = characterInfoArray[i].vertex_BL.uv2_v4;
-            m_textInfo.meshInfo[materialIndex].uvs2_v4[1 + index_X4] = characterInfoArray[i].vertex_TL.uv2_v4;
-            m_textInfo.meshInfo[materialIndex].uvs2_v4[2 + index_X4] = characterInfoArray[i].vertex_TR.uv2_v4;
-            m_textInfo.meshInfo[materialIndex].uvs2_v4[3 + index_X4] = characterInfoArray[i].vertex_BR.uv2_v4;
+            // Setup UVS3
+            m_textInfo.meshInfo[materialIndex].uvs3[0 + index_X4] = characterInfoArray[i].vertex_BL.uv3;
+            m_textInfo.meshInfo[materialIndex].uvs3[1 + index_X4] = characterInfoArray[i].vertex_TL.uv3;
+            m_textInfo.meshInfo[materialIndex].uvs3[2 + index_X4] = characterInfoArray[i].vertex_TR.uv3;
+            m_textInfo.meshInfo[materialIndex].uvs3[3 + index_X4] = characterInfoArray[i].vertex_BR.uv3;
 
             // setup Vertex Colors
             m_textInfo.meshInfo[materialIndex].colors32[0 + index_X4] = characterInfoArray[i].vertex_BL.color;
@@ -5899,11 +5899,11 @@ namespace TMPro
             }
 
 
-            // Setup tangents
-            m_textInfo.meshInfo[materialIndex].uvs2_v4[0 + index_X4] = characterInfoArray[i].vertex_BL.uv2_v4;
-            m_textInfo.meshInfo[materialIndex].uvs2_v4[1 + index_X4] = characterInfoArray[i].vertex_TL.uv2_v4;
-            m_textInfo.meshInfo[materialIndex].uvs2_v4[2 + index_X4] = characterInfoArray[i].vertex_TR.uv2_v4;
-            m_textInfo.meshInfo[materialIndex].uvs2_v4[3 + index_X4] = characterInfoArray[i].vertex_BR.uv2_v4;
+            // Setup UVS4
+            m_textInfo.meshInfo[materialIndex].uvs3[0 + index_X4] = characterInfoArray[i].vertex_BL.uv3;
+            m_textInfo.meshInfo[materialIndex].uvs3[1 + index_X4] = characterInfoArray[i].vertex_TL.uv3;
+            m_textInfo.meshInfo[materialIndex].uvs3[2 + index_X4] = characterInfoArray[i].vertex_TR.uv3;
+            m_textInfo.meshInfo[materialIndex].uvs3[3 + index_X4] = characterInfoArray[i].vertex_BR.uv3;
 
 
             // setup Vertex Colors

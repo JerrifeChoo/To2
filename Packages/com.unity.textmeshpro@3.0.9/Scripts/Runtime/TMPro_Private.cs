@@ -4315,7 +4315,7 @@ namespace TMPro
                 m_mesh.uv = m_textInfo.meshInfo[0].uvs0;
                 m_mesh.uv2 = m_textInfo.meshInfo[0].uvs2;
                 m_mesh.tangents = m_textInfo.meshInfo[0].tangents;
-                m_mesh.SetUVs(2, m_textInfo.meshInfo[0].uvs2_v4);
+                m_mesh.SetUVs(2, m_textInfo.meshInfo[0].uvs3);
                 //m_mesh.uv4 = m_textInfo.meshInfo[0].uvs4;
                 m_mesh.colors32 = m_textInfo.meshInfo[0].colors32;
 
@@ -4338,7 +4338,7 @@ namespace TMPro
                     m_subTextObjects[i].mesh.uv = m_textInfo.meshInfo[i].uvs0;
                     m_subTextObjects[i].mesh.uv2 = m_textInfo.meshInfo[i].uvs2;
                     m_subTextObjects[i].mesh.tangents = m_textInfo.meshInfo[i].tangents;
-                    m_subTextObjects[i].mesh.SetUVs(2, m_textInfo.meshInfo[i].uvs2_v4);
+                    m_subTextObjects[i].mesh.SetUVs(2, m_textInfo.meshInfo[i].uvs3);
                     //m_subTextObjects[i].mesh.uv4 = m_textInfo.meshInfo[i].uvs4;
                     m_subTextObjects[i].mesh.colors32 = m_textInfo.meshInfo[i].colors32;
 
