@@ -4434,10 +4434,10 @@ namespace TMPro
 
                 // Must ensure the Canvas support the additional vertex attributes used by TMP.
                 // This could be optimized based on canvas render mode settings but gets complicated to handle with multiple text objects using different material presets.
-                if (m_canvas.additionalShaderChannels != (AdditionalCanvasShaderChannels)25)
-                    m_canvas.additionalShaderChannels |= (AdditionalCanvasShaderChannels)25;
+                if (m_canvas.additionalShaderChannels != (AdditionalCanvasShaderChannels)3)
+                    m_canvas.additionalShaderChannels |= (AdditionalCanvasShaderChannels)3;
                 // Third UV stream (Mesh.SetUVs(2)) carries TMP vertex-outline payload; not mangled like Mesh.tangents under UI scale/rotate.
-                m_canvas.additionalShaderChannels |= AdditionalCanvasShaderChannels.TexCoord2;
+                // m_canvas.additionalShaderChannels |= AdditionalCanvasShaderChannels.TexCoord2;
 
                 // Sort the geometry of the text object if needed.
                 if (m_geometrySortingOrder != VertexSortingOrder.Normal)
