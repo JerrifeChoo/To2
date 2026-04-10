@@ -8,7 +8,7 @@
   <h5>1、Outline\Underlay颜色使用R8B8G8A8，分别压缩成一个float</h5>
   <h5>2、将RatioScalA、RatioScalB、RatioScalC、OutlieTickness压缩成一个float</h5>
   <h5>3、将Underlay OffsetX、OffsetY、Dilate、Softness压缩成一个float</h5>
-  <h5>4、修改TextMeshPro部分源码，将以上4个float参数通过tangents（Vector4）传递给Shader</h5>
+  <h5>4、修改TextMeshPro部分源码，将以上4个float参数通过Textcoord2（Vector4）传递给Shader</h5>
   <h5>5、添加TMP_SDF-Mobile Vertex，在原基础上支持float解析参数，并替换对应参数</h5>
   <h5>6、Editor Inspector拓展</h5>
   <img width="848" height="1068" alt="C3L(45R(V(@FCN4OLL0W7B9" src="https://github.com/user-attachments/assets/3cf0a2a6-c373-4bcf-b23c-38d94778e4b5" />  
