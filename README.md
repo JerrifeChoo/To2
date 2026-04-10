@@ -1,4 +1,6 @@
 <h6>$${\color{red}tangent通道UGUI内部会执行矩阵变化，已换成textcoord2通道}$$</h6>
+<img width="812" height="458" alt="image" src="https://github.com/user-attachments/assets/aa981769-59f2-4ae3-992a-40febf964ed6" />
+
 <h1>Unity TextMeshPro 描边/阴影合批优化，支持缩放旋转</h1>
 <h4>描边拓展：不打断合拼前提下支持描边宽度修改，添加外描边支持</h4>
 <h4>阴影拓展：不打断合批前提下支持Offset、Dilate、Softness修改</h4>
